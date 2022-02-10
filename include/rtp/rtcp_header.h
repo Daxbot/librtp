@@ -36,9 +36,6 @@ typedef union rtcp_header {
         unsigned int pt : 8;        /**< RTCP packet type. */
         uint16_t length;            /**< Length in 32-bit units (less 1) */
     } app;
-
-    /** Raw bytes. */
-    uint8_t raw[4];
 } rtcp_header;
 
 /**
