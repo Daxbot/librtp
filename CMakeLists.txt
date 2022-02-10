@@ -11,24 +11,23 @@ set(CMAKE_CXX_STANDARD 11)
 include(GNUInstallDirs)
 
 # Options
-option(BUILD_TESTS "Build tests" OFF)
-option(BUILD_DOCS "Build documentation" OFF)
-option(BUILD_EXAMPLES "Build PulseAudio examples" OFF)
+option(LIBRTP_BUILD_TESTS "Build tests" OFF)
+option(LIBRTP_BUILD_DOCS "Build documentation" OFF)
+option(LIBRTP_BUILD_EXAMPLES "Build PulseAudio examples" OFF)
 
-
-# Build tests (-DBUILD_TESTS=ON)
-if(BUILD_TESTS)
+# Build tests (-DLIBRTP_BUILD_TESTS=ON)
+if(LIBRTP_BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
 endif()
 
-# Build examples (-DBUILD_EXAMPLES=ON)
-if(BUILD_EXAMPLES)
+# Build examples (-DLIBRTP_BUILD_EXAMPLES=ON)
+if(LIBRTP_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-# Build documentation (-DBUILD_DOCS=ON)
-if(BUILD_DOCS)
+# Build documentation (-DLIBRTP_BUILD_DOCS=ON)
+if(LIBRTP_BUILD_DOCS)
     find_package(Doxygen)
     if(DOXYGEN_FOUND)
         configure_file(
