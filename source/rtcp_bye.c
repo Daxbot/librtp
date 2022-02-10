@@ -172,7 +172,6 @@ int rtcp_bye_add_source(rtcp_bye *packet, uint32_t src_id)
     return 0;
 }
 
-
 int rtcp_bye_remove_source(rtcp_bye *packet, uint32_t src_id)
 {
     if(!packet)

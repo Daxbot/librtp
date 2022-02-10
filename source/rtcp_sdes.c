@@ -55,7 +55,7 @@ static int entry_size(const rtcp_sdes_entry *source)
  * @return rtcp_sdes_item*
  * @private
  */
-static rtcp_sdes_item *find_item(
+static rtcp_sdes_item *get_item(
     rtcp_sdes_entry *source, rtcp_sdes_type type)
 {
     if(source) {
@@ -79,13 +79,13 @@ static rtcp_sdes_item *find_item(
  * @return rtcp_sdes_item* - newly created item.
  * @private
  */
-static rtcp_sdes_item *add_item(
+static rtcp_sdes_item *create_item(
     rtcp_sdes_entry *source, rtcp_sdes_type type, const void *data, int size)
 {
     if(!source || !data)
         return NULL;
 
-    if(find_item(source, type))
+    if(get_item(source, type))
         return NULL;
 
     if(source->item_count == 0) {
@@ -119,12 +119,12 @@ static rtcp_sdes_item *add_item(
  * @return 0 on success.
  * @private
  */
-static int remove_item(rtcp_sdes_entry *source, rtcp_sdes_type type)
+static int free_item(rtcp_sdes_entry *source, rtcp_sdes_type type)
 {
     if(!source)
         return -1;
 
-    rtcp_sdes_item *item = find_item(source, type);
+    rtcp_sdes_item *item = get_item(source, type);
     if(item == NULL)
         return 0;
 
@@ -302,7 +302,7 @@ int rtcp_sdes_parse(
                 }
 
                 const uint8_t length = data[1];
-                rtcp_sdes_item *item = add_item(
+                rtcp_sdes_item *item = create_item(
                     source, type, data + 2, length);
 
                 offset += item_size(item);
@@ -314,23 +314,23 @@ int rtcp_sdes_parse(
 }
 
 
-rtcp_sdes_entry *rtcp_sdes_find_entry(rtcp_sdes *packet, uint32_t id)
+int rtcp_sdes_find_entry(rtcp_sdes *packet, uint32_t id)
 {
     if(packet) {
         for(uint8_t i = 0; i < packet->header.common.count; ++i) {
             rtcp_sdes_entry *source = &packet->srcs[i];
             if(source->id == id)
-                return source;
+                return i;
         }
     }
 
-    return NULL;
+    return -1;
 }
 
-rtcp_sdes_entry *rtcp_sdes_add_entry(rtcp_sdes *packet, uint32_t id)
+int rtcp_sdes_add_entry(rtcp_sdes *packet, uint32_t id)
 {
     if(!packet)
-        return NULL;
+        return -1;
 
     if(!packet->header.common.count) {
         packet->srcs = (rtcp_sdes_entry*)malloc(sizeof(rtcp_sdes_entry));
@@ -338,10 +338,10 @@ rtcp_sdes_entry *rtcp_sdes_add_entry(rtcp_sdes *packet, uint32_t id)
     }
     else {
         if(packet->header.common.count == 0xff)
-            return NULL;
+            return -1;
 
-        if(rtcp_sdes_find_entry(packet, id))
-            return NULL;
+        if(rtcp_sdes_find_entry(packet, id) != -1)
+            return -1;
 
         packet->header.common.count += 1;
 
@@ -354,7 +354,7 @@ rtcp_sdes_entry *rtcp_sdes_add_entry(rtcp_sdes *packet, uint32_t id)
     source->item_count = 0;
     source->items = NULL;
 
-    return source;
+    return 0;
 }
 
 int rtcp_sdes_remove_entry(rtcp_sdes *packet, uint32_t id)
@@ -362,11 +362,12 @@ int rtcp_sdes_remove_entry(rtcp_sdes *packet, uint32_t id)
     if(!packet)
         return -1;
 
-    rtcp_sdes_entry *source = rtcp_sdes_find_entry(packet, id);
-    if(!source)
+    const int index = rtcp_sdes_find_entry(packet, id);
+    if(index < 0)
         return 0;
 
     // Free the source's items
+    rtcp_sdes_entry *source = &packet->srcs[index];
     for(uint8_t i = 0; i < source->item_count; ++i) {
         rtcp_sdes_item *item = &source->items[i];
         if(item->data)
@@ -375,7 +376,6 @@ int rtcp_sdes_remove_entry(rtcp_sdes *packet, uint32_t id)
         free(item);
     }
 
-    const size_t index = (source - packet->srcs) / sizeof(rtcp_sdes_entry);
     const size_t size = (packet->header.common.count - index) * sizeof(rtcp_sdes_entry);
     if(size)
         memmove(source, source + 1, size);
@@ -399,11 +399,12 @@ int rtcp_sdes_get_item(rtcp_sdes *packet, uint32_t src, rtcp_sdes_type type,
     if(!packet || !buffer)
         return -1;
 
-    rtcp_sdes_entry *source = rtcp_sdes_find_entry(packet, src);
-    if(source == NULL)
+    const int index = rtcp_sdes_find_entry(packet, src);
+    if(index < 0)
         return -1;
 
-    rtcp_sdes_item *item = find_item(source, type);
+    rtcp_sdes_entry *source = &packet->srcs[index];
+    rtcp_sdes_item *item = get_item(source, type);
     if(size < item->length + 1)
         return -1;
 
@@ -419,14 +420,15 @@ int rtcp_sdes_set_item(
     if(!packet || !data)
         return -1;
 
-    rtcp_sdes_entry *source = rtcp_sdes_find_entry(packet, src);
-    if(!source)
+    const int index = rtcp_sdes_find_entry(packet, src);
+    if(index < 0)
         return -1;
 
-    if(find_item(source, type))
-        remove_item(source, type);
+    rtcp_sdes_entry *source = &packet->srcs[index];
+    if(get_item(source, type))
+        free_item(source, type);
 
-    if(add_item(source, type, data, strlen(data)) == NULL)
+    if(create_item(source, type, data, strlen(data)) == NULL)
         return -1;
 
     // Update header length
@@ -440,11 +442,12 @@ int rtcp_sdes_clear_item(rtcp_sdes *packet, uint32_t src, rtcp_sdes_type type)
     if(!packet || type == RTCP_SDES_END)
         return -1;
 
-    rtcp_sdes_entry *source = rtcp_sdes_find_entry(packet, src);
-    if(!source)
+    const int index = rtcp_sdes_find_entry(packet, src);
+    if(index < 0)
         return 0;
 
-    remove_item(source, type);
+    rtcp_sdes_entry *source = &packet->srcs[index];
+    free_item(source, type);
 
     // Update header length
     packet->header.common.length = (rtcp_sdes_size(packet) / 4) - 1;

@@ -146,20 +146,18 @@ int rtcp_sdes_parse(rtcp_sdes *packet, const uint8_t *buffer, int size);
  *
  * @param [in] packet - packet to search.
  * @param [in] id - id of the source to find.
- * @return rtcp_sdes_source*
+ * @return source index or -1 on failure.
  */
-rtcp_sdes_entry *rtcp_sdes_find_entry(
-    struct rtcp_sdes *packet, uint32_t id);
+int rtcp_sdes_find_entry(struct rtcp_sdes *packet, uint32_t id);
 
 /**
  * @brief Add a source.
  *
  * @param [out] packet - packet to add to.
  * @param [in] id - id of the source to add.
- * @return rtcp_sdes_source* - the newly created source.
+ * @return 0 on success.
  */
-rtcp_sdes_entry *rtcp_sdes_add_entry(
-    struct rtcp_sdes *packet, uint32_t id);
+int rtcp_sdes_add_entry(struct rtcp_sdes *packet, uint32_t id);
 
 /**
  * @brief Remove a source.

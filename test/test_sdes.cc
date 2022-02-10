@@ -16,8 +16,8 @@ TEST(SdesPacket, AddChunk) {
 
     rtcp_sdes_init(packet);
 
-    EXPECT_EQ(rtcp_sdes_add_entry(nullptr, 0x1234), nullptr);
-    EXPECT_NE(rtcp_sdes_add_entry(packet, 0x1234), nullptr);
+    EXPECT_EQ(rtcp_sdes_add_entry(nullptr, 0x1234), -1);
+    EXPECT_NE(rtcp_sdes_add_entry(packet, 0x1234), -1);
 
     EXPECT_EQ(packet->header.common.count, 1);
     EXPECT_NE(packet->srcs, nullptr);
@@ -31,12 +31,11 @@ TEST(SdesPacket, FindChunk) {
 
     rtcp_sdes_init(packet);
 
-    rtcp_sdes_entry *source = rtcp_sdes_add_entry(packet, 0x1234);
-    EXPECT_NE(source, nullptr);
+    EXPECT_EQ(rtcp_sdes_add_entry(packet, 0x1234), 0);
 
-    EXPECT_EQ(rtcp_sdes_find_entry(nullptr, 0x1234), nullptr);
-    EXPECT_EQ(rtcp_sdes_find_entry(packet, 0), nullptr);
-    EXPECT_EQ(rtcp_sdes_find_entry(packet, 0x1234), source);
+    EXPECT_EQ(rtcp_sdes_find_entry(nullptr, 0x1234), -1);
+    EXPECT_EQ(rtcp_sdes_find_entry(packet, 0), -1);
+    EXPECT_NE(rtcp_sdes_find_entry(packet, 0x1234), -1);
 
     rtcp_sdes_free(packet);
 }
@@ -119,7 +118,9 @@ TEST(SdesPacket, Clear) {
     EXPECT_EQ(rtcp_sdes_clear_item(packet, 0, RTCP_SDES_CNAME), 0);
     EXPECT_EQ(rtcp_sdes_clear_item(packet, 0x1234, RTCP_SDES_CNAME), 0);
 
-    rtcp_sdes_entry *entry = rtcp_sdes_find_entry(packet, 0x1234);
+    const int index = rtcp_sdes_find_entry(packet, 0x1234);
+    rtcp_sdes_entry *entry = &packet->srcs[index];
+
     EXPECT_EQ(entry->item_count, 0);
     EXPECT_EQ(entry->items, nullptr);
 
