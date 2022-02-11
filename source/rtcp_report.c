@@ -46,3 +46,21 @@ int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size)
 
     return 0;
 }
+
+int rtcp_report_set_fraction(rtcp_report *report, float percent_lost)
+{
+    if(!report)
+        return -1;
+
+    report->fraction = percent_lost * 255.0;
+    return 0;
+}
+
+int rtcp_report_get_fraction(rtcp_report *report, float *percent_lost)
+{
+    if(!report || !percent_lost)
+        return -1;
+
+    *percent_lost = (float)(report->fraction) / 255.0;
+    return 0;
+}

@@ -58,3 +58,25 @@ TEST(Report, Parse) {
 
     delete[] buffer;
 }
+
+TEST(Report, Fraction) {
+    rtcp_report report;
+
+    float fraction = 1.0;
+    float result;
+
+    EXPECT_EQ(rtcp_report_set_fraction(nullptr, 0), -1);
+    EXPECT_NE(rtcp_report_set_fraction(&report, fraction), -1);
+
+    EXPECT_EQ(rtcp_report_get_fraction(nullptr, &result), -1);
+    EXPECT_EQ(rtcp_report_get_fraction(&report, nullptr), -1);
+    EXPECT_NE(rtcp_report_get_fraction(&report, &result), -1);
+
+    EXPECT_EQ(fraction, result);
+
+    fraction = 0;
+    rtcp_report_set_fraction(&report, fraction);
+    rtcp_report_get_fraction(&report, &result);
+
+    EXPECT_EQ(fraction, result);
+}
