@@ -27,7 +27,7 @@ typedef struct rtp_packet {
 /**
  * @brief Allocate a new RTP packet.
  *
- * @returns packet.
+ * @return packet.
  */
 rtp_packet *rtp_packet_create();
 
@@ -43,7 +43,7 @@ void rtp_packet_free(rtp_packet *packet);
  *
  * @param [out] packet - packet to initialize.
  * @param [in] pt - payload type.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtp_packet_init(rtp_packet *packet, uint8_t pt);
 
@@ -61,7 +61,7 @@ int rtp_packet_size(const rtp_packet *packet);
  * @param [in] packet - packet to serialize.
  * @param [out] buffer - buffer to write to.
  * @param [in] size - buffer size.
- * @returns number of bytes written or -1 on failure.
+ * @return number of bytes written or -1 on failure.
  */
 int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, int size);
 
@@ -74,7 +74,7 @@ int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, int size);
  * @param [out] packet - empty packet to fill.
  * @param [in] buffer - buffer to read from.
  * @param [in] size - buffer size.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, int size);
 

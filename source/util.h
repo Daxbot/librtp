@@ -5,8 +5,8 @@
  * @copyright 2022 Daxbot
  */
 
-#ifndef RTP_UTIL_H_
-#define RTP_UTIL_H_
+#ifndef LIBRTP_UTIL_H_
+#define LIBRTP_UTIL_H_
 
 #include <stdint.h>
 
@@ -45,7 +45,7 @@ void write_u32(uint8_t *buffer, uint32_t value);
  * @brief Read a 24-bit value from a buffer (big-endian).
  *
  * @param [in] buffer - buffer to read from.
- * @returns uint32_t - value read.
+ * @return uint32_t - value read.
  * @private
  */
 uint32_t read_u24(const uint8_t *buffer);
@@ -63,7 +63,7 @@ int32_t read_s24(const uint8_t *buffer);
  * @brief Read a 32-bit value from a buffer (big-endian).
  *
  * @param [in] buffer - buffer to read from.
- * @returns uint32_t - value read.
+ * @return uint32_t - value read.
  * @private
  */
 uint32_t read_u32(const uint8_t *buffer);
@@ -81,7 +81,7 @@ void write_u16(uint8_t *buffer, uint16_t value);
  * @brief Read a 16-bit value from a buffer (big-endian).
  *
  * @param [in] buffer to read from.
- * @returns uint16_t - value read.
+ * @return uint16_t - value read.
  * @private
  */
 uint16_t read_u16(const uint8_t *buffer);
@@ -90,4 +90,4 @@ uint16_t read_u16(const uint8_t *buffer);
 }
 #endif // __cplusplus
 
-#endif // RTP_UTIL_H_
+#endif // LIBRTP_UTIL_H_

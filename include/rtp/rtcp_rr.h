@@ -81,7 +81,7 @@ void rtcp_rr_free(rtcp_rr *packet);
  * @brief Initialize an RR packet with default values.
  *
  * @param [out] packet - packet to initialize.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtcp_rr_init(rtcp_rr *packet);
 
