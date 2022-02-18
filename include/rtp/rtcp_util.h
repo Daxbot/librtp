@@ -1,5 +1,5 @@
 /**
- * @file rtcp.h
+ * @file rtcp_util.h
  * @brief RTCP utility functions.
  * @author Wilkins White
  * @copyright 2022 Daxbot

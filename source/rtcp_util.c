@@ -1,5 +1,5 @@
 /**
- * @file rtcp.c
+ * @file rtcp_util.c
  * @brief Real-time transport control protocol.
  * @author Wilkins White
  * @copyright 2022 Daxbot
