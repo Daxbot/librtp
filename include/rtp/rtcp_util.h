@@ -11,12 +11,42 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+/**
+ * @brief The minimum average time between RTCP packets in seconds.
+ *
+ * @see IETF RFC3550 "Computing the RTCP Transmission Interval" (§A.7)
+ *
+ * This time prevents the reports from `clumping' when sessions are small and
+ * the law of large numbers isn't helping to smooth out the traffic.  It also
+ * keeps the report interval from becoming ridiculously small during transient
+ * outages like a network partition.
+ */
+#ifndef LIBRTP_RTCP_MIN_TIME
+#define LIBRTP_RTCP_MIN_TIME (5.0)
+#endif
+
+/**
+ * @brief The fraction of the RTCP brandwidth reserved for senders.
+ *
+ * @see IETF RFC3550 "Computing the RTCP Transmission Interval" (§A.7)
+ *
+ * This fraction was chosen so that in a typical session with one or two active
+ * senders, the computed report time would be roughly equal to the minimum
+ * report time so that we don't unnecessarily slow down receiver reports.
+ */
+#ifndef LIBRTP_RTCP_SENDER_BW_FRACTION
+#define LIBRTP_RTCP_SENDER_BW_FRACTION (0.25)
+#endif
+
 #if defined(__cplusplus)
 extern "C" {
 #endif // __cplusplus
 
 /**
- * @brief Returns the RTCP packet type
+ * @brief Parses the RTCP packet type from a raw buffer.
+ *
+ * Use this to determine what type of RTCP packet has been received before
+ * continuing on to more specific parsing.
  *
  * @param [in] buffer - buffer to parse.
  * @param [in] size - buffer size.
@@ -29,16 +59,17 @@ int rtcp_type(const uint8_t *buffer, int size);
  *
  * @see IETF RFC3550 "Computing the RTCP Transmission Interval" (§A.7)
  *
- * @param [in] members - The current estimate for the number of session members.
- * @param [in] senders - The current estimate for the number of session senders.
- * @param [in] rtcp_bw - The target RTCP bandwidth, i.e. the total bandwidth
- *  that will be used by all members of this session (in bits/s).
- * @param [in] we_sent - True if the application has sent data since the 2nd
+ * @param [in] members - the current estimate for the number of session members.
+ * @param [in] senders - the current estimate for the number of session senders.
+ * @param [in] rtcp_bw - the target RTCP bandwidth, i.e. the total bandwidth
+ *  that will be used by all members of this session (in bits/s). Note that this
+ *  should be some fraction of the total bandwidth, typically 5%.
+ * @param [in] we_sent - true if the application has sent data since the 2nd
  *  previous RTCP report was transmitted.
- * @param [in] avg_rtcp_size - The average compound RTCP packet size, in octets,
+ * @param [in] avg_rtcp_size - the average compound RTCP packet size, in octets,
  *  over all RTCP packets sent and received by this participant. The size
- *  includes lower-layer transport and network protocol headers.
- * @param [in] initial - True if the application has not sent an RTCP packet.
+ *  should include lower-layer transport and network protocol headers.
+ * @param [in] initial - true if the application has not yet sent an RTCP packet.
  * @return Deterministic calculated interval in seconds.
  */
 double rtcp_interval(
@@ -48,6 +79,7 @@ double rtcp_interval(
     bool we_sent,
     double avg_rtcp_size,
     bool initial);
+
 
 #if defined(__cplusplus)
 }

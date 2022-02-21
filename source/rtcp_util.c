@@ -30,26 +30,9 @@ double rtcp_interval(
     double avg_rtcp_size,
     bool initial)
 {
-    /*
-     * Minimum average time between RTCP packets from this site (in
-     * seconds).  This time prevents the reports from `clumping' when
-     * sessions are small and the law of large numbers isn't helping
-     * to smooth out the traffic.  It also keeps the report interval
-     * from becoming ridiculously small during transient outages like
-     * a network partition.
-     */
-    static const double RTCP_MIN_TIME = 5.0; // 5 seconds
-
-    /*
-     * Fraction of the RTCP bandwidth to be shared among active
-     * senders.  (This fraction was chosen so that in a typical
-     * session with one or two active senders, the computed report
-     * time would be roughly equal to the minimum report time so that
-     * we don't unnecessarily slow down receiver reports.)  The
-     * receiver fraction must be 1 - the sender fraction.
-     */
-    static const double RTCP_SENDER_BW_FRACTION = 0.25;
-    static const double RTCP_RCVR_BW_FRACTION = (1 - RTCP_SENDER_BW_FRACTION);
+    static const double MIN_TIME = LIBRTP_RTCP_MIN_TIME;
+    static const double SENDER_BW_FRACTION = LIBRTP_RTCP_SENDER_BW_FRACTION;
+    static const double RCVR_BW_FRACTION = (1 - SENDER_BW_FRACTION);
 
     /*
      * To compensate for "timer reconsideration" converging to a
@@ -64,9 +47,9 @@ double rtcp_interval(
      * sources so the report interval will converge to the correct
      * interval more quickly.
      */
-    double rtcp_min_time = RTCP_MIN_TIME;
+    double min_time = MIN_TIME;
     if(initial)
-        rtcp_min_time /= 2;
+        min_time /= 2;
 
     /*
      * Dedicate a fraction of the RTCP bandwidth to senders unless
@@ -74,13 +57,13 @@ double rtcp_interval(
      * more than that fraction.
      */
     int n = members;
-    if(senders <= members * RTCP_SENDER_BW_FRACTION) {
+    if(senders <= members * SENDER_BW_FRACTION) {
         if(we_sent) {
-            rtcp_bw *= RTCP_SENDER_BW_FRACTION;
+            rtcp_bw *= SENDER_BW_FRACTION;
             n = senders;
         }
         else {
-            rtcp_bw *= RTCP_RCVR_BW_FRACTION;
+            rtcp_bw *= RCVR_BW_FRACTION;
             n -= senders;
         }
     }
@@ -95,8 +78,8 @@ double rtcp_interval(
      * average time between reports.
      */
     double t = avg_rtcp_size * n / rtcp_bw;
-    if(t < rtcp_min_time)
-        t = rtcp_min_time;
+    if(t < min_time)
+        t = min_time;
 
     /*
      * To avoid traffic bursts from unintended synchronization with
