@@ -95,7 +95,7 @@ void rtcp_sr_free(rtcp_sr *packet);
  * @brief Initialize an SR packet with default values.
  *
  * @param [out] packet - packet to initialize.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtcp_sr_init(rtcp_sr *packet);
 

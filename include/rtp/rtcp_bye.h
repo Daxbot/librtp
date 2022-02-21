@@ -63,7 +63,7 @@ void rtcp_bye_free(rtcp_bye *packet);
  * @brief Initialize a BYE packet with default values.
  *
  * @param [out] packet - packet to initialize.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtcp_bye_init(rtcp_bye *packet);
 

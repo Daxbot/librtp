@@ -12,7 +12,7 @@
 #define LIBRTP_VERSION_MAJOR 1
 
 /** Minor version, increment for functionality changes. */
-#define LIBRTP_VERSION_MINOR 2
+#define LIBRTP_VERSION_MINOR 3
 
 /** Build version, increment for small fixes. */
 #define LIBRTP_VERSION_BUILD 0

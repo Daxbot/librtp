@@ -109,7 +109,7 @@ void rtcp_sdes_free(rtcp_sdes *packet);
  * @brief Initialize an SDES packet with default values.
  *
  * @param [out] packet - packet to initialize.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtcp_sdes_init(rtcp_sdes *packet);
 

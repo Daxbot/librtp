@@ -42,7 +42,7 @@ extern "C" {
  */
 typedef struct rtcp_app {
     rtcp_header header;     /**< RTCP header. */
-    uint32_t src;           /**< Source identifier. */
+    uint32_t ssrc;          /**< Source identifier. */
     uint32_t name;          /**< Packet name (ASCII). */
     int app_size;           /**< Size of the application data in bytes. */
     void *app_data;         /**< Application data. */
@@ -67,7 +67,7 @@ void rtcp_app_free(rtcp_app *packet);
  *
  * @param [out] packet - packet to initialize.
  * @param [in] subtype - packet subtype.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtcp_app_init(rtcp_app *packet, uint8_t subtype);
 
@@ -75,7 +75,7 @@ int rtcp_app_init(rtcp_app *packet, uint8_t subtype);
  * @brief Returns the APP packet size.
  *
  * @param [in] packet - packet to check.
- * @returns packet size in bytes.
+ * @return packet size in bytes.
  */
 int rtcp_app_size(const rtcp_app *packet);
 

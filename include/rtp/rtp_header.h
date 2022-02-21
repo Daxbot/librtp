@@ -62,7 +62,7 @@ typedef struct rtp_header {
 /**
  * @brief Allocate a new header.
  *
- * @returns header.
+ * @return header.
  */
 rtp_header *rtp_header_create();
 
@@ -78,7 +78,7 @@ void rtp_header_free(rtp_header *header);
  *
  * @param [out] header - header to initialize.
  * @param [in] pt - payload type.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtp_header_init(rtp_header *header, uint8_t pt);
 
@@ -96,7 +96,7 @@ int rtp_header_size(const rtp_header *header);
  * @param [in] header - header to serialize.
  * @param [out] buffer - buffer to write to.
  * @param [in] size - buffer size.
- * @returns number of bytes written or -1 on failure.
+ * @return number of bytes written or -1 on failure.
  */
 int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size);
 
@@ -106,7 +106,7 @@ int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size);
  * @param [out] header - empty header to fill.
  * @param [in] buffer - buffer to read from.
  * @param [in] size - buffer size.
- * @returns 0 on success.
+ * @return 0 on success.
  */
 int rtp_header_parse(rtp_header *header, const uint8_t *buffer, int size);
 

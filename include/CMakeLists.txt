@@ -5,6 +5,7 @@ list(APPEND RTP_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/rtp/rtcp_rr.h
     ${CMAKE_CURRENT_LIST_DIR}/rtp/rtcp_sdes.h
     ${CMAKE_CURRENT_LIST_DIR}/rtp/rtcp_sr.h
+    ${CMAKE_CURRENT_LIST_DIR}/rtp/rtcp_util.h
     ${CMAKE_CURRENT_LIST_DIR}/rtp/rtp_header.h
     ${CMAKE_CURRENT_LIST_DIR}/rtp/rtp_packet.h
     ${CMAKE_CURRENT_LIST_DIR}/rtp/version.h)

@@ -72,7 +72,7 @@ int rtcp_app_serialize(
     if(rtcp_header_serialize(&packet->header, buffer, size) < 0)
         return -1;
 
-    write_u32(buffer + 4, packet->src);
+    write_u32(buffer + 4, packet->ssrc);
     write_u32(buffer + 8, packet->name);
 
     if(packet->app_data)
@@ -90,7 +90,7 @@ int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, int size)
     if(pt != RTCP_APP)
         return -1;
 
-    packet->src = read_u32(buffer + 4);
+    packet->ssrc = read_u32(buffer + 4);
     packet->name = read_u32(buffer + 8);
 
     const int length = (packet->header.common.length + 1) * 4;
