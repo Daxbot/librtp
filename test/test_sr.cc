@@ -6,6 +6,7 @@ TEST(SrPacket, Create) {
     rtcp_sr *packet = rtcp_sr_create();
     EXPECT_NE(packet, nullptr);
 
+    EXPECT_DEATH(rtcp_sr_free(nullptr), "");
     rtcp_sr_free(packet);
 }
 
@@ -16,8 +17,8 @@ TEST(SrPacket, Add) {
     rtcp_sr_init(packet);
 
     rtcp_report report;
-    EXPECT_EQ(rtcp_sr_add_report(nullptr, &report), -1);
-    EXPECT_EQ(rtcp_sr_add_report(packet, nullptr), -1);
+    EXPECT_DEATH(rtcp_sr_add_report(nullptr, &report), "");
+    EXPECT_DEATH(rtcp_sr_add_report(packet, nullptr), "");
     EXPECT_EQ(rtcp_sr_add_report(packet, &report), 0);
 
     EXPECT_EQ(packet->header.common.count, 1);
@@ -38,7 +39,7 @@ TEST(SrPacket, Find) {
 
     rtcp_sr_add_report(packet, &report);
 
-    EXPECT_EQ(rtcp_sr_find_report(nullptr, report.ssrc), nullptr);
+    EXPECT_DEATH(rtcp_sr_find_report(nullptr, report.ssrc), "");
     EXPECT_EQ(rtcp_sr_find_report(packet, 0), nullptr);
     EXPECT_NE(rtcp_sr_find_report(packet, report.ssrc), nullptr);
 
@@ -56,9 +57,9 @@ TEST(SrPacket, Remove) {
     };
 
     rtcp_sr_add_report(packet, &report);
-    EXPECT_EQ(rtcp_sr_remove_report(nullptr, report.ssrc), -1);
-    EXPECT_EQ(rtcp_sr_remove_report(packet, 0), 0);
-    EXPECT_EQ(rtcp_sr_remove_report(packet, report.ssrc), 0);
+
+    EXPECT_DEATH(rtcp_sr_remove_report(nullptr, report.ssrc), "");
+    rtcp_sr_remove_report(packet, report.ssrc);
 
     EXPECT_EQ(packet->header.common.count, 0);
     EXPECT_EQ(packet->reports, nullptr);
@@ -72,7 +73,8 @@ TEST(SrPacket, Size) {
 
     rtcp_sr_init(packet);
 
-    EXPECT_EQ(rtcp_sr_size(nullptr), -1);
+    EXPECT_DEATH(rtcp_sr_size(nullptr), "");
+
     EXPECT_EQ(rtcp_sr_size(packet), 28);
     EXPECT_EQ(packet->header.common.length, 6);
 
@@ -82,7 +84,6 @@ TEST(SrPacket, Size) {
 
     rtcp_sr_add_report(packet, &report);
 
-    EXPECT_EQ(rtcp_sr_size(nullptr), -1);
     EXPECT_EQ(rtcp_sr_size(packet), 28 + 24);
     EXPECT_EQ(packet->header.common.length, 6 + 6);
 
@@ -104,8 +105,8 @@ TEST(SrPacket, Serialize) {
     const size_t size = rtcp_sr_size(packet);
     uint8_t *buffer = new uint8_t[size];
 
-    EXPECT_EQ(rtcp_sr_serialize(nullptr, buffer, size), -1);
-    EXPECT_EQ(rtcp_sr_serialize(packet, nullptr, 0), -1);
+    EXPECT_DEATH(rtcp_sr_serialize(nullptr, buffer, size), "");
+    EXPECT_DEATH(rtcp_sr_serialize(packet, nullptr, 0), "");
     EXPECT_EQ(rtcp_sr_serialize(packet, buffer, size), size);
 
     rtcp_sr_free(packet);
@@ -140,8 +141,8 @@ TEST(SrPacket, Parse) {
     rtcp_sr_serialize(packet, buffer, size);
 
     rtcp_sr *parsed = rtcp_sr_create();
-    EXPECT_NE(rtcp_sr_parse(nullptr, buffer, size), 0);
-    EXPECT_NE(rtcp_sr_parse(parsed, nullptr, 0), 0);
+    EXPECT_DEATH(rtcp_sr_parse(nullptr, buffer, size), "");
+    EXPECT_DEATH(rtcp_sr_parse(parsed, nullptr, 0), "");
     EXPECT_EQ(rtcp_sr_parse(parsed, buffer, size), 0);
 
     EXPECT_EQ(packet->ssrc, parsed->ssrc);

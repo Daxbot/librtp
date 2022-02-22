@@ -6,13 +6,17 @@
  */
 
 #include <string.h>
+#include <assert.h>
 
 #include "rtp/rtcp_header.h"
 #include "util.h"
 
 int rtcp_header_serialize(const rtcp_header *header, uint8_t *buffer, int size)
 {
-    if(!header || !buffer || size < 4)
+    assert(header != NULL);
+    assert(buffer != NULL);
+
+    if(size < 4)
         return -1;
 
     buffer[0] = (header->common.version << 6)
@@ -27,7 +31,10 @@ int rtcp_header_serialize(const rtcp_header *header, uint8_t *buffer, int size)
 
 int rtcp_header_parse(rtcp_header *header, const uint8_t *buffer, int size)
 {
-    if(!header || !buffer || size < 4)
+    assert(header != NULL);
+    assert(buffer != NULL);
+
+    if(size < 4)
         return -1;
 
     header->common.version = (buffer[0] >> 6) & 3;

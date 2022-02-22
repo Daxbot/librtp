@@ -8,13 +8,13 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "rtp/rtp_packet.h"
 
 rtp_packet *rtp_packet_create()
 {
     rtp_packet *packet = (rtp_packet*)malloc(sizeof(rtp_packet));
-
     if(packet) {
         memset(packet, 0, sizeof(rtp_packet));
         packet->header = rtp_header_create();
@@ -30,8 +30,7 @@ rtp_packet *rtp_packet_create()
 
 void rtp_packet_free(rtp_packet *packet)
 {
-    if(!packet)
-        return;
+    assert(packet != NULL);
 
     if(packet->header)
         rtp_header_free(packet->header);
@@ -42,26 +41,24 @@ void rtp_packet_free(rtp_packet *packet)
     free(packet);
 }
 
-int rtp_packet_init(rtp_packet *packet, uint8_t pt)
+void rtp_packet_init(rtp_packet *packet, uint8_t pt)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
-    return rtp_header_init(packet->header, pt);
+    rtp_header_init(packet->header, pt);
 }
 
 int rtp_packet_size(const rtp_packet *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     return rtp_header_size(packet->header) + packet->payload_size;
 }
 
 int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, int size)
 {
-    if(!packet || !buffer)
-        return -1;
+    assert(packet != NULL);
+    assert(buffer != NULL);
 
     const int packet_size = rtp_packet_size(packet);
     if(size < packet_size)
@@ -80,8 +77,8 @@ int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, int size)
 
 int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, int size)
 {
-    if(!packet || !buffer)
-        return -1;
+    assert(packet != NULL);
+    assert(buffer != NULL);
 
     if(rtp_header_parse(packet->header, buffer, size) < 0)
         return -1;
@@ -92,10 +89,12 @@ int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, int size)
     return 0;
 }
 
-int rtp_packet_set_payload(
-    rtp_packet *packet, const void *data, int size)
+int rtp_packet_set_payload(rtp_packet *packet, const void *data, int size)
 {
-    if(!packet || !data || packet->payload_data)
+    assert(packet != NULL);
+    assert(data != NULL);
+
+    if(packet->payload_data)
         return -1;
 
     packet->payload_data = malloc(size);
@@ -108,16 +107,13 @@ int rtp_packet_set_payload(
     return 0;
 }
 
-int rtp_packet_clear_payload(rtp_packet *packet)
+void rtp_packet_clear_payload(rtp_packet *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     if(packet->payload_data) {
         free(packet->payload_data);
         packet->payload_data = NULL;
         packet->payload_size = 0;
     }
-
-    return 0;
 }

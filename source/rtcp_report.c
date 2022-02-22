@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "rtp/rtcp_report.h"
 #include "util.h"
@@ -14,7 +15,10 @@
 int rtcp_report_serialize(
     const rtcp_report *report, uint8_t *buffer, int size)
 {
-    if(!report || !buffer || size < 24)
+    assert(report != NULL);
+    assert(buffer != NULL);
+
+    if(size < 24)
         return -1;
 
     write_u32(buffer, report->ssrc);
@@ -32,7 +36,10 @@ int rtcp_report_serialize(
 
 int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size)
 {
-    if(!report || !buffer || size < 24)
+    assert(report != NULL);
+    assert(buffer != NULL);
+
+    if(size < 24)
         return -1;
 
     report->ssrc = read_u32(buffer);
@@ -47,20 +54,16 @@ int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size)
     return 0;
 }
 
-int rtcp_report_set_fraction(rtcp_report *report, float percent_lost)
+void rtcp_report_set_fraction(rtcp_report *report, float percent_lost)
 {
-    if(!report)
-        return -1;
+    assert(report != NULL);
 
     report->fraction = percent_lost * 255.0;
-    return 0;
 }
 
-int rtcp_report_get_fraction(rtcp_report *report, float *percent_lost)
+float rtcp_report_get_fraction(rtcp_report *report)
 {
-    if(!report || !percent_lost)
-        return -1;
+    assert(report != NULL);
 
-    *percent_lost = (float)(report->fraction) / 255.0;
-    return 0;
+    return (float)(report->fraction) / 255.0;
 }

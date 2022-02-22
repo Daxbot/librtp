@@ -78,9 +78,8 @@ void rtp_header_free(rtp_header *header);
  *
  * @param [out] header - header to initialize.
  * @param [in] pt - payload type.
- * @return 0 on success.
  */
-int rtp_header_init(rtp_header *header, uint8_t pt);
+void rtp_header_init(rtp_header *header, uint8_t pt);
 
 /**
  * @brief Returns the header size.
@@ -133,9 +132,8 @@ int rtp_header_add_csrc(rtp_header *header, uint32_t csrc);
  *
  * @param [out] header - header to remove from.
  * @param [in] csrc - id of the csrc to remove.
- * @return 0 on success.
  */
-int rtp_header_remove_csrc(rtp_header *header, uint32_t csrc);
+void rtp_header_remove_csrc(rtp_header *header, uint32_t csrc);
 
 /**
  * @brief Set the header extension.
@@ -153,9 +151,8 @@ int rtp_header_set_ext(
  * @brief Clear the header extension.
  *
  * @param [out] header - header to clear on.
- * @return 0 on success.
  */
-int rtp_header_clear_ext(rtp_header *header);
+void rtp_header_clear_ext(rtp_header *header);
 
 #if defined(__cplusplus)
 }

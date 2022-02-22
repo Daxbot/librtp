@@ -81,9 +81,8 @@ void rtcp_rr_free(rtcp_rr *packet);
  * @brief Initialize an RR packet with default values.
  *
  * @param [out] packet - packet to initialize.
- * @return 0 on success.
  */
-int rtcp_rr_init(rtcp_rr *packet);
+void rtcp_rr_init(rtcp_rr *packet);
 
 /**
  * @brief Returns the RR packet size.
@@ -136,9 +135,8 @@ int rtcp_rr_add_report(rtcp_rr *packet, const rtcp_report *report);
  *
  * @param [out] packet - packet to remove from.
  * @param [in] ssrc - source id of the report to remove.
- * @return 0 on success.
  */
-int rtcp_rr_remove_report(rtcp_rr *packet, uint32_t ssrc);
+void rtcp_rr_remove_report(rtcp_rr *packet, uint32_t ssrc);
 
 /**
  * @brief Set extension data.
@@ -154,9 +152,8 @@ int rtcp_rr_set_ext(rtcp_rr *packet, const void *data, int size);
  * @brief Clear the extension data.
  *
  * @param [out] packet - packet to clear on.
- * @return 0 on success.
  */
-int rtcp_rr_clear_ext(rtcp_rr *packet);
+void rtcp_rr_clear_ext(rtcp_rr *packet);
 
 #if defined(__cplusplus)
 }

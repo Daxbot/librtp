@@ -60,16 +60,15 @@ int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size);
  * @param [in] percent_lost - percentage of packets lost [0.0 - 1.0].
  * @return 0 on success.
  */
-int rtcp_report_set_fraction(rtcp_report *report, float percent_lost);
+void rtcp_report_set_fraction(rtcp_report *report, float percent_lost);
 
 /**
  * @brief Get the percentage of packets lost during the last reporting interval.
  *
  * @param [in] report - report to get on.
- * @param [out] percent_lost - percentage of packets lost [0.0 - 1.0].
- * @return 0 on success.
+ * @return percentage of packets lost [0.0 - 1.0].
  */
-int rtcp_report_get_fraction(rtcp_report *report, float *percent_lost);
+float rtcp_report_get_fraction(rtcp_report *report);
 
 #if defined(__cplusplus)
 }

@@ -63,9 +63,8 @@ void rtcp_bye_free(rtcp_bye *packet);
  * @brief Initialize a BYE packet with default values.
  *
  * @param [out] packet - packet to initialize.
- * @return 0 on success.
  */
-int rtcp_bye_init(rtcp_bye *packet);
+void rtcp_bye_init(rtcp_bye *packet);
 
 /**
  * @brief Returns the BYE packet size.
@@ -118,9 +117,8 @@ int rtcp_bye_add_source(rtcp_bye *packet, uint32_t src_id);
  *
  * @param [out] packet - packet to remove from.
  * @param [in] src_id - source to remove.
- * @return 0 on success.
  */
-int rtcp_bye_remove_source(rtcp_bye *packet, uint32_t src_id);
+void rtcp_bye_remove_source(rtcp_bye *packet, uint32_t src_id);
 
 /**
  * @brief Set the BYE message.
@@ -135,9 +133,8 @@ int rtcp_bye_set_message(rtcp_bye *packet, const char *message);
  * @brief Clear the BYE message.
  *
  * @param [out] packet - packet.
- * @return 0 on success.
  */
-int rtcp_bye_clear_message(rtcp_bye *packet);
+void rtcp_bye_clear_message(rtcp_bye *packet);
 
 #if defined(__cplusplus)
 }

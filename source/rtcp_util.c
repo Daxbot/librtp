@@ -6,13 +6,16 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
 
 #include "rtp/rtcp_header.h"
 #include "rtp/rtcp_util.h"
 
 int rtcp_type(const uint8_t *buffer, int size)
 {
-    if(!buffer || size < 2)
+    assert(buffer != NULL);
+
+    if(size < 2)
         return -1;
 
     int pt = buffer[1];
