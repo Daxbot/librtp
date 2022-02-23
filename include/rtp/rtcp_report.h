@@ -36,9 +36,9 @@ typedef struct rtcp_report {
  *
  * @param [out] report - report to initialize.
  * @param [in] s - source state information.
- * @param [in] now - the current time.
+ * @param [in] tc - the current time.
  */
-void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv now);
+void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv tc);
 
 /**
  * @brief Write a report to a buffer.

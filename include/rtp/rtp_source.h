@@ -143,10 +143,9 @@ void rtp_source_update_jitter(rtp_source *s, uint32_t ts, uint32_t arrival);
  * an RTCP SR packet is received from the source.
  *
  * @param [in,out] s - source to update.
- * @param [in] ntp_sec - ntp_sec from the last received SR packet.
- * @param [in] ntp_frac - ntp_frac from the last received SR packet.
+ * @param [in] tc - the current time.
  */
-void rtp_source_update_lsr(rtp_source *s, uint32_t ntp_sec, uint32_t ntp_frac);
+void rtp_source_update_lsr(rtp_source *s, ntp_tv tc);
 
 #if defined(__cplusplus)
 }

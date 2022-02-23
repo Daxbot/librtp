@@ -13,7 +13,7 @@
 #include "rtp/rtcp_report.h"
 #include "util.h"
 
-void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv now)
+void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv tc)
 {
     assert(report != NULL);
     assert(s != NULL);
@@ -24,8 +24,8 @@ void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv now)
     report->last_seq = s->max_seq;
     report->jitter = s->jitter;
     report->lsr = ntp_short(s->lsr);
-    if(now.sec || now.frac)
-        report->dlsr = ntp_short(ntp_diff(now, s->lsr));
+    if(tc.sec || tc.frac)
+        report->dlsr = ntp_short(ntp_diff(tc, s->lsr));
 }
 
 int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size)

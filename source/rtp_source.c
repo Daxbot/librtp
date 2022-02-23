@@ -145,10 +145,9 @@ void rtp_source_update_jitter(rtp_source *s, uint32_t ts, uint32_t arrival)
     s->jitter += (1./16.) * ((double)d - s->jitter);
 }
 
-void rtp_source_update_lsr(rtp_source *s, uint32_t ntp_sec, uint32_t ntp_frac)
+void rtp_source_update_lsr(rtp_source *s, ntp_tv tc)
 {
     assert(s != NULL);
 
-    s->lsr.sec = ntp_sec;
-    s->lsr.frac = ntp_frac;
+    s->lsr = tc;
 }
