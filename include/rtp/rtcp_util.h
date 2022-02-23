@@ -80,6 +80,25 @@ double rtcp_interval(
     double avg_rtcp_size,
     bool initial);
 
+/**
+ * @brief Recompute the next RTCP packet transmission time.
+ *
+ * This function provides an implementation of the "reverse reconsideration"
+ * algorithm for recomputing RTCP transmission time due to a change in the
+ * number of session members (e.g., from receiving BYE packet).
+ *
+ * @see IETF RFC3550 "Receiving an RTCP BYE Packet" (§6.3.4)
+ *
+ * @param [in,out] tp - the last time an RTCP packet was transmitted.
+ * @param [in,out] tn - the next scheduled transmission time of an RTCP packet.
+ * @param [in] tc - the current time.
+ * @param [in] pmembers - the estimated number of session members at the time
+ *  tn was last computed.
+ * @param [in] members - the most current estimate for the number of session
+ *  members.
+ */
+void rtcp_reverse_reconsider(
+    double *tp, double *tn, double tc, int pmembers, int members);
 
 #if defined(__cplusplus)
 }

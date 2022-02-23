@@ -94,3 +94,10 @@ double rtcp_interval(
 
     return t;
 }
+
+void rtcp_reverse_reconsider(
+    double *tp, double *tn, double tc, int pmembers, int members)
+{
+    *tn = tc + ((double)members / pmembers) * ((*tn) - tc);
+    *tp = tc - ((double)members / pmembers) * (tc - (*tp));
+}
