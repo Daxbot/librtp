@@ -34,15 +34,16 @@ void rtp_header_free(rtp_header *header)
     free(header);
 }
 
-void rtp_header_init(rtp_header *header, uint8_t pt)
+void rtp_header_init(
+    rtp_header *header, uint8_t pt, uint32_t ssrc, uint16_t seq, uint32_t ts)
 {
     assert(header != NULL);
 
     header->version = 2;
     header->pt = pt;
-    header->seq = rand();
-    header->ts = rand();
-    header->ssrc = rand();
+    header->ssrc = ssrc;
+    header->seq = seq;
+    header->ts = ts;
 }
 
 int rtp_header_size(const rtp_header *header)

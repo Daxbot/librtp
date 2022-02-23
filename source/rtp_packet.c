@@ -41,11 +41,12 @@ void rtp_packet_free(rtp_packet *packet)
     free(packet);
 }
 
-void rtp_packet_init(rtp_packet *packet, uint8_t pt)
+void rtp_packet_init(
+    rtp_packet *packet, uint8_t pt, uint32_t ssrc, uint16_t seq, uint32_t ts)
 {
     assert(packet != NULL);
 
-    rtp_header_init(packet->header, pt);
+    rtp_header_init(packet->header, ssrc, pt, seq, ts);
 }
 
 int rtp_packet_size(const rtp_packet *packet)

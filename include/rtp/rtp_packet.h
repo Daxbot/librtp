@@ -43,8 +43,12 @@ void rtp_packet_free(rtp_packet *packet);
  *
  * @param [out] packet - packet to initialize.
  * @param [in] pt - payload type.
+ * @param [in] ssrc - synchronization source identifier.
+ * @param [in] seq - sequence number.
+ * @param [in] ts - packet timestamp.
  */
-void rtp_packet_init(rtp_packet *packet, uint8_t pt);
+void rtp_packet_init(
+    rtp_packet *packet, uint8_t pt, uint32_t ssrc, uint16_t seq, uint32_t ts);
 
 /**
  * @brief Returns the RTP packet size.

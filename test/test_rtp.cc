@@ -14,7 +14,7 @@ TEST(RtpPacket, Set) {
     rtp_packet *packet = rtp_packet_create();
     EXPECT_NE(packet, nullptr);
 
-    rtp_packet_init(packet, 96);
+    rtp_packet_init(packet, 96, rand(), rand(), rand());
 
     uint8_t data[32];
     EXPECT_DEATH(rtp_packet_set_payload(nullptr, data, sizeof(data)), "");
@@ -28,7 +28,7 @@ TEST(RtpPacket, Clear) {
     rtp_packet *packet = rtp_packet_create();
     EXPECT_NE(packet, nullptr);
 
-    rtp_packet_init(packet, 96);
+    rtp_packet_init(packet, 96, rand(), rand(), rand());
 
     uint8_t data[32];
     rtp_packet_set_payload(packet, data, sizeof(data));
@@ -46,7 +46,7 @@ TEST(RtpPacket, Serialize) {
     rtp_packet *packet = rtp_packet_create();
     EXPECT_NE(packet, nullptr);
 
-    rtp_packet_init(packet, 96);
+    rtp_packet_init(packet, 96, rand(), rand(), rand());
 
     uint8_t data[32];
     rtp_packet_set_payload(packet, data, sizeof(data));
@@ -66,7 +66,7 @@ TEST(RtpPacket, Parse) {
     rtp_packet *packet = rtp_packet_create();
     EXPECT_NE(packet, nullptr);
 
-    rtp_packet_init(packet, 96);
+    rtp_packet_init(packet, 96, rand(), rand(), rand());
 
     char data[] = "payload string of arbitrary length";
     rtp_packet_set_payload(packet, data, sizeof(data));

@@ -60,29 +60,33 @@ typedef struct rtp_header {
 } rtp_header;
 
 /**
- * @brief Allocate a new header.
+ * @brief Allocate a new RTP header.
  *
  * @return header.
  */
 rtp_header *rtp_header_create();
 
 /**
- * @brief Free a header.
+ * @brief Free an RTP header.
  *
  * @param [out] header - header to free.
  */
 void rtp_header_free(rtp_header *header);
 
 /**
- * @brief Initialize a header with default values.
+ * @brief Initialize an RTP header.
  *
  * @param [out] header - header to initialize.
  * @param [in] pt - payload type.
+ * @param [in] ssrc - synchronization source identifier.
+ * @param [in] seq - sequence number.
+ * @param [in] ts - packet timestamp.
  */
-void rtp_header_init(rtp_header *header, uint8_t pt);
+void rtp_header_init(
+    rtp_header *header, uint8_t pt, uint32_t ssrc, uint16_t seq, uint32_t ts);
 
 /**
- * @brief Returns the header size.
+ * @brief Returns the RTP header size.
  *
  * @param [in] header - header to check.
  * @return header size in bytes.
@@ -90,7 +94,7 @@ void rtp_header_init(rtp_header *header, uint8_t pt);
 int rtp_header_size(const rtp_header *header);
 
 /**
- * @brief Write an header to a buffer.
+ * @brief Write an RTP header to a buffer.
  *
  * @param [in] header - header to serialize.
  * @param [out] buffer - buffer to write to.
@@ -100,7 +104,7 @@ int rtp_header_size(const rtp_header *header);
 int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size);
 
 /**
- * @brief Fill a header from a buffer.
+ * @brief Fill a RTP header from a buffer.
  *
  * @param [out] header - empty header to fill.
  * @param [in] buffer - buffer to read from.
