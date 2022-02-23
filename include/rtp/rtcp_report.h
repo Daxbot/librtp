@@ -11,6 +11,8 @@
 
 #include <stdint.h>
 
+#include "rtp_source.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif // __cplusplus
@@ -27,6 +29,14 @@ typedef struct rtcp_report {
     uint32_t lsr;               /**< Last SR. */
     uint32_t dlsr;              /**< Delay since last SR. */
 } rtcp_report;
+
+/**
+ * @brief Initialize a report.
+ *
+ * @param [out] report - report to initialize.
+ * @param [in] s - source state information.
+ */
+void rtcp_report_init(rtcp_report *report, rtp_source *s);
 
 /**
  * @brief Write a report to a buffer.
@@ -47,28 +57,6 @@ int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size);
  * @return 0 on success.
  */
 int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size);
-
-/**
- * @brief Set the percentage of packets lost during the last reporting interval.
- *
- * Calculate percent_lost by dividing the count of received packets, including
- * any late or duplicate packets, by the expected packet count.
- *
- * @see IETF RFC3550 "Determining Number of Packets Expected and Lost" (§A.3)
- *
- * @param [out] report - report to set on.
- * @param [in] percent_lost - percentage of packets lost [0.0 - 1.0].
- * @return 0 on success.
- */
-void rtcp_report_set_fraction(rtcp_report *report, float percent_lost);
-
-/**
- * @brief Get the percentage of packets lost during the last reporting interval.
- *
- * @param [in] report - report to get on.
- * @return percentage of packets lost [0.0 - 1.0].
- */
-float rtcp_report_get_fraction(rtcp_report *report);
 
 #if defined(__cplusplus)
 }

@@ -58,16 +58,3 @@ TEST(Report, Parse) {
 
     delete[] buffer;
 }
-
-TEST(Report, Fraction) {
-    rtcp_report report;
-
-    EXPECT_DEATH(rtcp_report_set_fraction(nullptr, 0), "");
-    rtcp_report_set_fraction(&report, 1.0);
-
-    EXPECT_DEATH(rtcp_report_get_fraction(nullptr), "");
-    EXPECT_EQ(rtcp_report_get_fraction(&report), 1.0);
-
-    rtcp_report_set_fraction(&report, 0.0);
-    EXPECT_EQ(rtcp_report_get_fraction(&report), 0.0);
-}

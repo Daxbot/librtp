@@ -12,8 +12,19 @@
 #include "rtp/rtcp_report.h"
 #include "util.h"
 
-int rtcp_report_serialize(
-    const rtcp_report *report, uint8_t *buffer, int size)
+void rtcp_report_init(rtcp_report *report, rtp_source *s)
+{
+    assert(report != NULL);
+    assert(s != NULL);
+
+    report->ssrc = s->id;
+    report->fraction = s->fraction;
+    report->lost = s->lost;
+    report->last_seq = s->max_seq;
+    report->jitter = s->jitter;
+}
+
+int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size)
 {
     assert(report != NULL);
     assert(buffer != NULL);
@@ -52,18 +63,4 @@ int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size)
     report->dlsr = read_u32(buffer + 20);
 
     return 0;
-}
-
-void rtcp_report_set_fraction(rtcp_report *report, float percent_lost)
-{
-    assert(report != NULL);
-
-    report->fraction = percent_lost * 255.0;
-}
-
-float rtcp_report_get_fraction(rtcp_report *report)
-{
-    assert(report != NULL);
-
-    return (float)(report->fraction) / 255.0;
 }
