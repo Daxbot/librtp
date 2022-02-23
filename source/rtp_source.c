@@ -13,7 +13,7 @@
 #include "rtp/rtp_source.h"
 
 /**
- * @brief Sequence number rollover value.
+ * @brief RTP sequence number rollover value.
  * @private
  */
 #define LIBRTP_SEQ_MOD (1 << 16)
@@ -115,6 +115,8 @@ int rtp_source_update_seq(rtp_source *s, uint16_t seq)
 
 void rtp_source_update_lost(rtp_source *s)
 {
+    assert(s != NULL);
+
     uint32_t ext_max = s->cycles + s->max_seq;
     int expected = ext_max - s->base_seq + 1;
 
@@ -134,9 +136,19 @@ void rtp_source_update_lost(rtp_source *s)
 
 void rtp_source_update_jitter(rtp_source *s, uint32_t ts, uint32_t arrival)
 {
+    assert(s != NULL);
+
     int transit = arrival - ts;
     int d = abs(transit - s->transit);
 
     s->transit = transit;
     s->jitter += (1./16.) * ((double)d - s->jitter);
+}
+
+void rtp_source_update_lsr(rtp_source *s, uint32_t ntp_sec, uint32_t ntp_frac)
+{
+    assert(s != NULL);
+
+    s->lsr.sec = ntp_sec;
+    s->lsr.frac = ntp_frac;
 }

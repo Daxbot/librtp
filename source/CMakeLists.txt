@@ -1,4 +1,5 @@
 list(APPEND RTP_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/ntp.c
     ${CMAKE_CURRENT_LIST_DIR}/rtcp_app.c
     ${CMAKE_CURRENT_LIST_DIR}/rtcp_bye.c
     ${CMAKE_CURRENT_LIST_DIR}/rtcp_header.c

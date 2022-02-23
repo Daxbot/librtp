@@ -9,10 +9,11 @@
 #include <string.h>
 #include <assert.h>
 
+#include "rtp/ntp.h"
 #include "rtp/rtcp_report.h"
 #include "util.h"
 
-void rtcp_report_init(rtcp_report *report, rtp_source *s)
+void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv now)
 {
     assert(report != NULL);
     assert(s != NULL);
@@ -22,6 +23,9 @@ void rtcp_report_init(rtcp_report *report, rtp_source *s)
     report->lost = s->lost;
     report->last_seq = s->max_seq;
     report->jitter = s->jitter;
+    report->lsr = ntp_short(s->lsr);
+    if(now.sec || now.frac)
+        report->dlsr = ntp_short(ntp_diff(now, s->lsr));
 }
 
 int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size)

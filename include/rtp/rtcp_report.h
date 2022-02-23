@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 
+#include "ntp.h"
 #include "rtp_source.h"
 
 #if defined(__cplusplus)
@@ -35,8 +36,9 @@ typedef struct rtcp_report {
  *
  * @param [out] report - report to initialize.
  * @param [in] s - source state information.
+ * @param [in] now - the current time.
  */
-void rtcp_report_init(rtcp_report *report, rtp_source *s);
+void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv now);
 
 /**
  * @brief Write a report to a buffer.
