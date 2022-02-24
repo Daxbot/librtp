@@ -36,14 +36,6 @@ TEST(NTP, Micros) {
     EXPECT_NEAR(ntp_to_unix(ntp), s, 1e-6);
 }
 
-TEST(NTP, Nanos) {
-    uint32_t nanos = 12345;
-    double s = nanos / 1e9;
-
-    ntp_tv ntp = ntp_from_unix(s);
-    EXPECT_NEAR(ntp_to_unix(ntp), s, 1e-9);
-}
-
 TEST(NTP, Diff) {
     auto tp = system_clock::now();
     double s = duration<double>(tp.time_since_epoch()).count();
