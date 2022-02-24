@@ -46,7 +46,7 @@ void rtp_packet_init(
 {
     assert(packet != NULL);
 
-    rtp_header_init(packet->header, ssrc, pt, seq, ts);
+    rtp_header_init(packet->header, pt, ssrc, seq, ts);
 }
 
 int rtp_packet_size(const rtp_packet *packet)
