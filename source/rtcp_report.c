@@ -24,7 +24,7 @@ void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv tc)
     report->last_seq = s->max_seq;
     report->jitter = s->jitter;
     report->lsr = ntp_short(s->lsr);
-    if(tc.sec || tc.frac)
+    if(report->lsr && (tc.sec || tc.frac))
         report->dlsr = ntp_short(ntp_diff(tc, s->lsr));
 }
 
