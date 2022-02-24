@@ -9,6 +9,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include "rtp/rtcp_header.h"
 #include "rtp/rtp_header.h"
 #include "util.h"
 
@@ -114,11 +115,14 @@ int rtp_header_parse(rtp_header *header, const uint8_t *buffer, int size)
     if(size < 12)
         return -1;
 
+    // Version must be 2
     header->version = (buffer[0] >> 6) & 3;
-    header->pt = buffer[1] & 0x7f;
+    if(header->version != 2)
+        return -1;
 
-    // Sanity check
-    if(header->version != 2 || header->pt == 0)
+    // Payload type must not be in the range [72-95]
+    header->pt = buffer[1] & 0x7f;
+    if(header->pt < 96 && header->pt > 71)
         return -1;
 
     header->x = (buffer[0] >> 4) & 1;
