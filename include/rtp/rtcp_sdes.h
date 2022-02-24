@@ -109,9 +109,8 @@ void rtcp_sdes_free(rtcp_sdes *packet);
  * @brief Initialize an SDES packet with default values.
  *
  * @param [out] packet - packet to initialize.
- * @return 0 on success.
  */
-int rtcp_sdes_init(rtcp_sdes *packet);
+void rtcp_sdes_init(rtcp_sdes *packet);
 
 /**
  * @brief Returns the SDES packet size.
@@ -164,9 +163,8 @@ int rtcp_sdes_add_entry(struct rtcp_sdes *packet, uint32_t id);
  *
  * @param [out] packet - packet to remove from.
  * @param [in] id - id of the source to remove.
- * @return 0 on success.
  */
-int rtcp_sdes_remove_entry(struct rtcp_sdes *packet, uint32_t id);
+void rtcp_sdes_remove_entry(struct rtcp_sdes *packet, uint32_t id);
 
 /**
  * @brief Get an SDES item.
@@ -206,9 +204,8 @@ int rtcp_sdes_set_item(
  * @param [out] packet - packet to clear on.
  * @param [in] src - id of the item's source.
  * @param [in] type - item type to clear.
- * @return int - 0 on success.
  */
-int rtcp_sdes_clear_item(
+void rtcp_sdes_clear_item(
     rtcp_sdes *packet, uint32_t src, rtcp_sdes_type type);
 
 #if defined(__cplusplus)

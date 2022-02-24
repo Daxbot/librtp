@@ -7,6 +7,7 @@ TEST(SdesPacket, Create) {
     rtcp_sdes *packet = rtcp_sdes_create();
     EXPECT_NE(packet, nullptr);
 
+    EXPECT_DEATH(rtcp_sdes_free(nullptr), "");
     rtcp_sdes_free(packet);
 }
 
@@ -16,7 +17,7 @@ TEST(SdesPacket, AddChunk) {
 
     rtcp_sdes_init(packet);
 
-    EXPECT_EQ(rtcp_sdes_add_entry(nullptr, 0x1234), -1);
+    EXPECT_DEATH(rtcp_sdes_add_entry(nullptr, 0x1234), "");
     EXPECT_NE(rtcp_sdes_add_entry(packet, 0x1234), -1);
 
     EXPECT_EQ(packet->header.common.count, 1);
@@ -33,7 +34,7 @@ TEST(SdesPacket, FindChunk) {
 
     EXPECT_EQ(rtcp_sdes_add_entry(packet, 0x1234), 0);
 
-    EXPECT_EQ(rtcp_sdes_find_entry(nullptr, 0x1234), -1);
+    EXPECT_DEATH(rtcp_sdes_find_entry(nullptr, 0x1234), "");
     EXPECT_EQ(rtcp_sdes_find_entry(packet, 0), -1);
     EXPECT_NE(rtcp_sdes_find_entry(packet, 0x1234), -1);
 
@@ -47,9 +48,9 @@ TEST(SdesPacket, RemoveChunk) {
     rtcp_sdes_init(packet);
 
     rtcp_sdes_add_entry(packet, 0x1234);
-    EXPECT_EQ(rtcp_sdes_remove_entry(nullptr, 0x1234), -1);
-    EXPECT_EQ(rtcp_sdes_remove_entry(packet, 0), 0);
-    EXPECT_EQ(rtcp_sdes_remove_entry(packet, 0x1234), 0);
+
+    EXPECT_DEATH(rtcp_sdes_remove_entry(nullptr, 0x1234), "");
+    rtcp_sdes_remove_entry(packet, 0x1234);
 
     EXPECT_EQ(packet->header.common.count, 0);
     EXPECT_EQ(packet->srcs, nullptr);
@@ -66,9 +67,10 @@ TEST(SdesPacket, Set) {
     rtcp_sdes_add_entry(packet, 0x1234);
 
     const char data[] = "cname";
-    EXPECT_EQ(rtcp_sdes_set_item(nullptr, 0x1234, RTCP_SDES_CNAME, data), -1);
-    EXPECT_EQ(rtcp_sdes_set_item(packet, 0x1234, RTCP_SDES_CNAME, nullptr), -1);
+    EXPECT_DEATH(rtcp_sdes_set_item(nullptr, 0x1234, RTCP_SDES_CNAME, data), "");
+    EXPECT_DEATH(rtcp_sdes_set_item(packet, 0x1234, RTCP_SDES_CNAME, nullptr), "");
     EXPECT_EQ(rtcp_sdes_set_item(packet, 0x1234, RTCP_SDES_CNAME, data), 0);
+
     EXPECT_EQ(packet->header.common.count, 1);
     EXPECT_NE(packet->srcs, nullptr);
 
@@ -97,8 +99,8 @@ TEST(SdesPacket, Get) {
     rtcp_sdes_set_item(packet, 0x1234, RTCP_SDES_CNAME, data);
 
     char buffer[6];
-    EXPECT_EQ(rtcp_sdes_get_item(nullptr, 0x1234, RTCP_SDES_CNAME, buffer, sizeof(buffer)), -1);
-    EXPECT_EQ(rtcp_sdes_get_item(packet, 0x1234, RTCP_SDES_CNAME, nullptr, 0), -1);
+    EXPECT_DEATH(rtcp_sdes_get_item(nullptr, 0x1234, RTCP_SDES_CNAME, buffer, sizeof(buffer)), "");
+    EXPECT_DEATH(rtcp_sdes_get_item(packet, 0x1234, RTCP_SDES_CNAME, nullptr, 0), "");
     EXPECT_EQ(rtcp_sdes_get_item(packet, 0x1234, RTCP_SDES_CNAME, buffer, sizeof(buffer)), strlen(data));
     EXPECT_EQ(std::string(buffer), data);
 
@@ -114,9 +116,8 @@ TEST(SdesPacket, Clear) {
     rtcp_sdes_add_entry(packet, 0x1234);
     rtcp_sdes_set_item(packet, 0x1234, RTCP_SDES_CNAME, "cname");
 
-    EXPECT_EQ(rtcp_sdes_clear_item(nullptr, 0x1234, RTCP_SDES_CNAME), -1);
-    EXPECT_EQ(rtcp_sdes_clear_item(packet, 0, RTCP_SDES_CNAME), 0);
-    EXPECT_EQ(rtcp_sdes_clear_item(packet, 0x1234, RTCP_SDES_CNAME), 0);
+    EXPECT_DEATH(rtcp_sdes_clear_item(nullptr, 0x1234, RTCP_SDES_CNAME), "");
+    rtcp_sdes_clear_item(packet, 0x1234, RTCP_SDES_CNAME);
 
     const int index = rtcp_sdes_find_entry(packet, 0x1234);
     rtcp_sdes_entry *entry = &packet->srcs[index];
@@ -133,7 +134,7 @@ TEST(SdesPacket, Size) {
 
     rtcp_sdes_init(packet);
 
-    EXPECT_EQ(rtcp_sdes_size(nullptr), -1);
+    EXPECT_DEATH(rtcp_sdes_size(nullptr), "");
     EXPECT_EQ(rtcp_sdes_size(packet), 4);
 
     for(uint8_t i = 1; i < 0x20; ++i) {
@@ -182,8 +183,8 @@ TEST(SdesPacket, Serialize) {
     const int size = rtcp_sdes_size(packet);
     uint8_t *buffer = new uint8_t[size];
 
-    EXPECT_EQ(rtcp_sdes_serialize(nullptr, buffer, size), -1);
-    EXPECT_EQ(rtcp_sdes_serialize(packet, nullptr, 0), -1);
+    EXPECT_DEATH(rtcp_sdes_serialize(nullptr, buffer, size), "");
+    EXPECT_DEATH(rtcp_sdes_serialize(packet, nullptr, 0), "");
     EXPECT_EQ(rtcp_sdes_serialize(packet, buffer, size), size);
 
     rtcp_sdes_free(packet);
@@ -212,8 +213,8 @@ TEST(SdesPacket, Parse) {
     rtcp_sdes_serialize(packet, buffer, size);
 
     rtcp_sdes *parsed = rtcp_sdes_create();
-    EXPECT_NE(rtcp_sdes_parse(parsed, nullptr, 0), 0);
-    EXPECT_NE(rtcp_sdes_parse(nullptr, buffer, size), 0);
+    EXPECT_DEATH(rtcp_sdes_parse(parsed, nullptr, 0), "");
+    EXPECT_DEATH(rtcp_sdes_parse(nullptr, buffer, size), "");
     EXPECT_EQ(rtcp_sdes_parse(parsed, buffer, size), 0);
 
     char cname[8];

@@ -163,9 +163,11 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    // Create RTP packet. Payload format can be any number [96-127].
+    // Create the RTP packet structure.
+    // For a dynamic payload set PT to any number [96-127].
+    // The values for SSRC, timestamp, and sequence should be randomly assigned.
     rtp_header *header = rtp_header_create();
-    rtp_header_init(header, 96);
+    rtp_header_init(header, 96, rand(), rand(), rand());
 
     /* Create a Linux Datagram socket for sending UDP packets. Replace this
      * with your platform's transport layer.

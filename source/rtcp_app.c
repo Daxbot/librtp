@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "rtp/rtcp_app.h"
 #include "util.h"
@@ -22,8 +23,7 @@ rtcp_app *rtcp_app_create()
 
 void rtcp_app_free(rtcp_app *packet)
 {
-    if(!packet)
-        return;
+    assert(packet != NULL);
 
     if(packet->app_data)
         free(packet->app_data);
@@ -31,23 +31,19 @@ void rtcp_app_free(rtcp_app *packet)
     free(packet);
 }
 
-int rtcp_app_init(rtcp_app *packet, uint8_t subtype)
+void rtcp_app_init(rtcp_app *packet, uint8_t subtype)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     packet->header.app.version = 2;
     packet->header.app.subtype = subtype;
     packet->header.app.pt = RTCP_APP;
     packet->header.app.length = 2;
-
-    return 0;
 }
 
 int rtcp_app_size(const rtcp_app *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     int size = 12;
     if(packet->app_data && packet->app_size) {
@@ -61,8 +57,8 @@ int rtcp_app_size(const rtcp_app *packet)
 int rtcp_app_serialize(
     const rtcp_app *packet, uint8_t *buffer, int size)
 {
-    if(!packet || !buffer)
-        return -1;
+    assert(packet != NULL);
+    assert(buffer != NULL);
 
     const int packet_size = rtcp_app_size(packet);
     if(size < packet_size)
@@ -83,8 +79,8 @@ int rtcp_app_serialize(
 
 int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, int size)
 {
-    if(!packet || !buffer)
-        return -1;
+    assert(packet != NULL);
+    assert(buffer != NULL);
 
     const int pt = rtcp_header_parse(&packet->header, buffer, size);
     if(pt != RTCP_APP)
@@ -106,7 +102,10 @@ int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, int size)
 
 int rtcp_app_set_data(rtcp_app *packet, const void *data, int size)
 {
-    if(!packet || !data || packet->app_data)
+    assert(packet != NULL);
+    assert(data != NULL);
+
+    if(packet->app_data)
         return -1;
 
     packet->app_data = malloc(size);
@@ -122,10 +121,9 @@ int rtcp_app_set_data(rtcp_app *packet, const void *data, int size)
     return 0;
 }
 
-int rtcp_app_clear_data(rtcp_app *packet)
+void rtcp_app_clear_data(rtcp_app *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     if(packet->app_data) {
         free(packet->app_data);
@@ -135,6 +133,4 @@ int rtcp_app_clear_data(rtcp_app *packet)
 
     // Update header length
     packet->header.common.length = (rtcp_app_size(packet) / 4) - 1;
-
-    return 0;
 }

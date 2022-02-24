@@ -67,9 +67,8 @@ void rtcp_app_free(rtcp_app *packet);
  *
  * @param [out] packet - packet to initialize.
  * @param [in] subtype - packet subtype.
- * @return 0 on success.
  */
-int rtcp_app_init(rtcp_app *packet, uint8_t subtype);
+void rtcp_app_init(rtcp_app *packet, uint8_t subtype);
 
 /**
  * @brief Returns the APP packet size.
@@ -114,9 +113,8 @@ int rtcp_app_set_data(rtcp_app *packet, const void *data, int size);
  * @brief Clear the application-dependent data.
  *
  * @param [out] packet - packet to clear on.
- * @return 0 on success.
  */
-int rtcp_app_clear_data(rtcp_app *packet);
+void rtcp_app_clear_data(rtcp_app *packet);
 
 #if defined(__cplusplus)
 }

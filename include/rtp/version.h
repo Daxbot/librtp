@@ -9,10 +9,10 @@
 #define LIBRTP_VERSION_H_
 
 /** Major version, increment for API changes. */
-#define LIBRTP_VERSION_MAJOR 1
+#define LIBRTP_VERSION_MAJOR 2
 
 /** Minor version, increment for functionality changes. */
-#define LIBRTP_VERSION_MINOR 3
+#define LIBRTP_VERSION_MINOR 0
 
 /** Build version, increment for small fixes. */
 #define LIBRTP_VERSION_BUILD 0

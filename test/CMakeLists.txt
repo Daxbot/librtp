@@ -3,6 +3,7 @@ include(GoogleTest)
 add_executable(tests
     ${PROJECT_SOURCE_DIR}/test/test_app.cc
     ${PROJECT_SOURCE_DIR}/test/test_bye.cc
+    ${PROJECT_SOURCE_DIR}/test/test_ntp.cc
     ${PROJECT_SOURCE_DIR}/test/test_report.cc
     ${PROJECT_SOURCE_DIR}/test/test_rr.cc
     ${PROJECT_SOURCE_DIR}/test/test_rtp.cc

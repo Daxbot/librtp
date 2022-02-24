@@ -6,13 +6,16 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
 
 #include "rtp/rtcp_header.h"
 #include "rtp/rtcp_util.h"
 
 int rtcp_type(const uint8_t *buffer, int size)
 {
-    if(!buffer || size < 2)
+    assert(buffer != NULL);
+
+    if(size < 2)
         return -1;
 
     int pt = buffer[1];
@@ -90,4 +93,11 @@ double rtcp_interval(
     t /= COMPENSATION;
 
     return t;
+}
+
+void rtcp_reverse_reconsider(
+    double *tp, double *tn, double tc, int pmembers, int members)
+{
+    *tn = tc + ((double)members / pmembers) * ((*tn) - tc);
+    *tp = tc - ((double)members / pmembers) * (tc - (*tp));
 }

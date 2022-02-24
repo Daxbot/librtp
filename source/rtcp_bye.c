@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include "rtp/rtcp_bye.h"
 #include "util.h"
@@ -23,8 +24,7 @@ rtcp_bye *rtcp_bye_create()
 
 void rtcp_bye_free(rtcp_bye *packet)
 {
-    if(!packet)
-        return;
+    assert(packet != NULL);
 
     if(!packet->src_ids)
         free(packet->src_ids);
@@ -35,21 +35,17 @@ void rtcp_bye_free(rtcp_bye *packet)
     free(packet);
 }
 
-int rtcp_bye_init(rtcp_bye *packet)
+void rtcp_bye_init(rtcp_bye *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     packet->header.common.version = 2;
     packet->header.common.pt = RTCP_BYE;
-
-    return 0;
 }
 
 int rtcp_bye_size(const rtcp_bye *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     int size = 4 + (packet->header.common.count * 4);
     if(packet->message) {
@@ -62,8 +58,8 @@ int rtcp_bye_size(const rtcp_bye *packet)
 
 int rtcp_bye_serialize(const rtcp_bye *packet, uint8_t *buffer, int size)
 {
-    if(!packet || !buffer)
-        return -1;
+    assert(packet != NULL);
+    assert(buffer != NULL);
 
     const int packet_size = rtcp_bye_size(packet);
     if(size < packet_size)
@@ -92,7 +88,10 @@ int rtcp_bye_serialize(const rtcp_bye *packet, uint8_t *buffer, int size)
 int rtcp_bye_parse(
     rtcp_bye *packet, const uint8_t *buffer, int size)
 {
-    if(!packet || !buffer || size < 4)
+    assert(packet != NULL);
+    assert(buffer != NULL);
+
+    if(size < 4)
         return -1;
 
     const int pt = rtcp_header_parse(&packet->header, buffer, size);
@@ -132,11 +131,11 @@ int rtcp_bye_parse(
 
 int rtcp_bye_find_source(const rtcp_bye *packet, uint32_t src_id)
 {
-    if(packet) {
-        for(uint8_t i = 0; i < packet->header.common.count; ++i) {
-            if(packet->src_ids[i] == src_id)
-                return i;
-        }
+    assert(packet != NULL);
+
+    for(uint8_t i = 0; i < packet->header.common.count; ++i) {
+        if(packet->src_ids[i] == src_id)
+            return i;
     }
 
     return -1;
@@ -144,8 +143,7 @@ int rtcp_bye_find_source(const rtcp_bye *packet, uint32_t src_id)
 
 int rtcp_bye_add_source(rtcp_bye *packet, uint32_t src_id)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     if(!packet->header.common.count) {
         packet->src_ids = (uint32_t*)malloc(sizeof(uint32_t));
@@ -172,14 +170,13 @@ int rtcp_bye_add_source(rtcp_bye *packet, uint32_t src_id)
     return 0;
 }
 
-int rtcp_bye_remove_source(rtcp_bye *packet, uint32_t src_id)
+void rtcp_bye_remove_source(rtcp_bye *packet, uint32_t src_id)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     const int index = rtcp_bye_find_source(packet, src_id);
     if(index < 0)
-        return 0;
+        return;
 
     const size_t size = (packet->header.common.count - index) * sizeof(uint32_t);
     if(size)
@@ -197,20 +194,21 @@ int rtcp_bye_remove_source(rtcp_bye *packet, uint32_t src_id)
 
     // Update header length
     packet->header.common.length = (rtcp_bye_size(packet) / 4) - 1;
-
-    return 0;
 }
 
 int rtcp_bye_set_message(rtcp_bye *packet, const char *message)
 {
-    if(!packet || !message)
-        return -1;
+    assert(packet != NULL);
+    assert(message != NULL);
 
     if(packet->message)
-        free(packet->message);
+        return -1;
 
     const size_t size = strlen(message);
     packet->message = (char*)malloc(size + 1);
+    if(!packet->message)
+        return -1;
+
     sprintf(packet->message, "%s", message);
 
     // Update header length
@@ -219,16 +217,13 @@ int rtcp_bye_set_message(rtcp_bye *packet, const char *message)
     return 0;
 }
 
-int rtcp_bye_clear_message(rtcp_bye *packet)
+void rtcp_bye_clear_message(rtcp_bye *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     free(packet->message);
     packet->message = NULL;
 
     // Update header length
     packet->header.common.length = (rtcp_bye_size(packet) / 4) - 1;
-
-    return 0;
 }

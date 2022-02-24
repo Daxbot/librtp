@@ -7,7 +7,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
+#include "rtp/rtcp_header.h"
 #include "rtp/rtp_header.h"
 #include "util.h"
 
@@ -22,8 +24,7 @@ rtp_header *rtp_header_create()
 
 void rtp_header_free(rtp_header *header)
 {
-    if(!header)
-        return;
+    assert(header != NULL);
 
     if(header->csrc)
         free(header->csrc);
@@ -34,24 +35,21 @@ void rtp_header_free(rtp_header *header)
     free(header);
 }
 
-int rtp_header_init(rtp_header *header, uint8_t pt)
+void rtp_header_init(
+    rtp_header *header, uint8_t pt, uint32_t ssrc, uint16_t seq, uint32_t ts)
 {
-    if(!header)
-        return -1;
+    assert(header != NULL);
 
     header->version = 2;
     header->pt = pt;
-    header->seq = rand();
-    header->ts = rand();
-    header->ssrc = rand();
-
-    return 0;
+    header->ssrc = ssrc;
+    header->seq = seq;
+    header->ts = ts;
 }
 
 int rtp_header_size(const rtp_header *header)
 {
-    if(!header)
-        return -1;
+    assert(header != NULL);
 
     int size = 12;
 
@@ -66,8 +64,8 @@ int rtp_header_size(const rtp_header *header)
 
 int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size)
 {
-    if(!header || !buffer)
-        return -1;
+    assert(header != NULL);
+    assert(buffer != NULL);
 
     const int header_size = rtp_header_size(header);
     if(size < header_size)
@@ -110,15 +108,21 @@ int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size)
 
 int rtp_header_parse(rtp_header *header, const uint8_t *buffer, int size)
 {
+    assert(header != NULL);
+    assert(buffer != NULL);
+
     // Check initial size
-    if(!header || !buffer || size < 12)
+    if(size < 12)
         return -1;
 
+    // Version must be 2
     header->version = (buffer[0] >> 6) & 3;
-    header->pt = buffer[1] & 0x7f;
+    if(header->version != 2)
+        return -1;
 
-    // Sanity check
-    if(header->version != 2 || header->pt == 0)
+    // Payload type must not be in the range [72-95]
+    header->pt = buffer[1] & 0x7f;
+    if(header->pt < 96 && header->pt > 71)
         return -1;
 
     header->x = (buffer[0] >> 4) & 1;
@@ -158,11 +162,11 @@ int rtp_header_parse(rtp_header *header, const uint8_t *buffer, int size)
 
 int rtp_header_find_csrc(rtp_header *header, uint32_t csrc)
 {
-    if(header) {
-        for(uint8_t i = 0; i < header->cc; ++i) {
-            if(header->csrc[i] == csrc)
-                return i;
-        }
+    assert(header != NULL);
+
+    for(uint8_t i = 0; i < header->cc; ++i) {
+        if(header->csrc[i] == csrc)
+            return i;
     }
 
     return -1;
@@ -170,8 +174,7 @@ int rtp_header_find_csrc(rtp_header *header, uint32_t csrc)
 
 int rtp_header_add_csrc(rtp_header *header, uint32_t csrc)
 {
-    if(!header)
-        return -1;
+    assert(header != NULL);
 
     if(!header->cc) {
         header->csrc = (uint32_t*)malloc(sizeof(uint32_t));
@@ -195,14 +198,13 @@ int rtp_header_add_csrc(rtp_header *header, uint32_t csrc)
     return 0;
 }
 
-int rtp_header_remove_csrc(rtp_header *header, uint32_t csrc)
+void rtp_header_remove_csrc(rtp_header *header, uint32_t csrc)
 {
-    if(!header)
-        return -1;
+    assert(header != NULL);
 
     const int index = rtp_header_find_csrc(header, csrc);
     if(index < 0)
-        return 0;
+        return;
 
     const size_t size = (header->cc - index) * sizeof(uint32_t);
     if(size)
@@ -217,37 +219,35 @@ int rtp_header_remove_csrc(rtp_header *header, uint32_t csrc)
         free(header->csrc);
         header->csrc = NULL;
     }
-
-    return 0;
 }
 
 int rtp_header_set_ext(
     rtp_header *header, uint16_t id, const uint32_t *data, int size)
 {
-    if(!header || !data)
-        return -1;
+    assert(header != NULL);
+    assert(data != NULL);
 
     if(header->ext_data)
-        free(header->ext_data);
+        return -1;
+
+    header->ext_data = (uint32_t*)malloc(4 * size);
+    if(!header->ext_data)
+        return -1;
 
     header->ext_id = id;
     header->ext_count = size;
-    header->ext_data = (uint32_t*)malloc(4 * size);
-
     memcpy(header->ext_data, data, size * 4);
+
     return 0;
 }
 
-int rtp_header_clear_ext(rtp_header *header)
+void rtp_header_clear_ext(rtp_header *header)
 {
-    if(!header)
-        return -1;
+    assert(header != NULL);
 
     if(header->ext_data) {
         free(header->ext_data);
         header->ext_id = 0;
         header->ext_count = 0;
     }
-
-    return 0;
 }

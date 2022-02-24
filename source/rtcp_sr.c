@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "rtp/rtcp_sr.h"
 #include "util.h"
@@ -22,8 +23,7 @@ rtcp_sr *rtcp_sr_create()
 
 void rtcp_sr_free(rtcp_sr *packet)
 {
-    if(!packet)
-        return;
+    assert(packet != NULL);
 
     if(packet->ext_data)
         free(packet->ext_data);
@@ -31,22 +31,18 @@ void rtcp_sr_free(rtcp_sr *packet)
     free(packet);
 }
 
-int rtcp_sr_init(rtcp_sr *packet)
+void rtcp_sr_init(rtcp_sr *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     packet->header.common.version = 2;
     packet->header.common.pt = RTCP_SR;
     packet->header.common.length = 6;
-
-    return 0;
 }
 
 int rtcp_sr_size(const rtcp_sr *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     const int report_size = packet->header.common.count * sizeof(rtcp_report);
     return 28 + report_size + packet->ext_size;
@@ -54,8 +50,8 @@ int rtcp_sr_size(const rtcp_sr *packet)
 
 int rtcp_sr_serialize(const rtcp_sr *packet, uint8_t *buffer, int size)
 {
-    if(!packet || !buffer)
-        return -1;
+    assert(packet != NULL);
+    assert(buffer != NULL);
 
     const int packet_size = rtcp_sr_size(packet);
     if(size < packet_size)
@@ -86,8 +82,8 @@ int rtcp_sr_serialize(const rtcp_sr *packet, uint8_t *buffer, int size)
 
 int rtcp_sr_parse(rtcp_sr *packet, const uint8_t *buffer, int size)
 {
-    if(!packet || !buffer)
-        return -1;
+    assert(packet != NULL);
+    assert(buffer != NULL);
 
     const int pt = rtcp_header_parse(&packet->header, buffer, size);
     if(pt != RTCP_SR)
@@ -127,12 +123,12 @@ int rtcp_sr_parse(rtcp_sr *packet, const uint8_t *buffer, int size)
 
 rtcp_report *rtcp_sr_find_report(rtcp_sr *packet, uint32_t src_id)
 {
-    if(packet) {
-        for(uint8_t i = 0; i < packet->header.common.count; ++i) {
-            rtcp_report *report = &packet->reports[i];
-            if(report->ssrc == src_id)
-                return report;
-        }
+    assert(packet != NULL);
+
+    for(uint8_t i = 0; i < packet->header.common.count; ++i) {
+        rtcp_report *report = &packet->reports[i];
+        if(report->ssrc == src_id)
+            return report;
     }
 
     return NULL;
@@ -140,8 +136,8 @@ rtcp_report *rtcp_sr_find_report(rtcp_sr *packet, uint32_t src_id)
 
 int rtcp_sr_add_report(rtcp_sr *packet, const rtcp_report *report)
 {
-    if(!packet || !report)
-        return -1;
+    assert(packet != NULL);
+    assert(report != NULL);
 
     if(!packet->header.common.count) {
         packet->reports = (rtcp_report*)malloc(sizeof(rtcp_report));
@@ -169,14 +165,13 @@ int rtcp_sr_add_report(rtcp_sr *packet, const rtcp_report *report)
     return 0;
 }
 
-int rtcp_sr_remove_report(rtcp_sr *packet, uint32_t src_id)
+void rtcp_sr_remove_report(rtcp_sr *packet, uint32_t src_id)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     rtcp_report *report = rtcp_sr_find_report(packet, src_id);
     if(!report)
-        return 0;
+        return;
 
     const size_t index = (report - packet->reports) / sizeof(rtcp_report);
     const size_t size = (packet->header.common.count - index) * sizeof(uint32_t);
@@ -195,17 +190,17 @@ int rtcp_sr_remove_report(rtcp_sr *packet, uint32_t src_id)
 
     // Update header length
     packet->header.common.length = (rtcp_sr_size(packet) / 4) - 1;
-
-    return 0;
 }
-
 
 int rtcp_sr_set_ext(rtcp_sr *packet, const void *data, int size)
 {
-    if(!packet || packet->ext_data || !data)
-        return -1;
+    assert(packet != NULL);
+    assert(data != NULL);
 
     if((size % 4) != 0)
+        return -1;
+
+    if(packet->ext_data)
         return -1;
 
     packet->ext_data = malloc(size);
@@ -221,10 +216,9 @@ int rtcp_sr_set_ext(rtcp_sr *packet, const void *data, int size)
     return 0;
 }
 
-int rtcp_sr_clear_ext(rtcp_sr *packet)
+void rtcp_sr_clear_ext(rtcp_sr *packet)
 {
-    if(!packet)
-        return -1;
+    assert(packet != NULL);
 
     if(packet->ext_data) {
         free(packet->ext_data);
@@ -234,6 +228,4 @@ int rtcp_sr_clear_ext(rtcp_sr *packet)
 
     // Update header length
     packet->header.common.length = (rtcp_sr_size(packet) / 4) - 1;
-
-    return 0;
 }

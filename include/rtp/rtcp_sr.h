@@ -95,9 +95,8 @@ void rtcp_sr_free(rtcp_sr *packet);
  * @brief Initialize an SR packet with default values.
  *
  * @param [out] packet - packet to initialize.
- * @return 0 on success.
  */
-int rtcp_sr_init(rtcp_sr *packet);
+void rtcp_sr_init(rtcp_sr *packet);
 
 /**
  * @brief Returns the SR packet size.
@@ -150,9 +149,8 @@ int rtcp_sr_add_report(rtcp_sr *packet, const rtcp_report *report);
  *
  * @param [out] packet - packet to remove from.
  * @param [in] ssrc - source id of the report to remove.
- * @return 0 on success.
  */
-int rtcp_sr_remove_report(rtcp_sr *packet, uint32_t ssrc);
+void rtcp_sr_remove_report(rtcp_sr *packet, uint32_t ssrc);
 
 /**
  * @brief Set the extension data.
@@ -168,9 +166,8 @@ int rtcp_sr_set_ext(rtcp_sr *packet, const void *data, int size);
  * @brief Clear the extension data.
  *
  * @param [out] packet - packet to clear on.
- * @return 0 on success.
  */
-int rtcp_sr_clear_ext(rtcp_sr *packet);
+void rtcp_sr_clear_ext(rtcp_sr *packet);
 
 #if defined(__cplusplus)
 }

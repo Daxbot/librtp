@@ -43,9 +43,12 @@ void rtp_packet_free(rtp_packet *packet);
  *
  * @param [out] packet - packet to initialize.
  * @param [in] pt - payload type.
- * @return 0 on success.
+ * @param [in] ssrc - synchronization source identifier.
+ * @param [in] seq - sequence number.
+ * @param [in] ts - packet timestamp.
  */
-int rtp_packet_init(rtp_packet *packet, uint8_t pt);
+void rtp_packet_init(
+    rtp_packet *packet, uint8_t pt, uint32_t ssrc, uint16_t seq, uint32_t ts);
 
 /**
  * @brief Returns the RTP packet size.
@@ -96,9 +99,8 @@ int rtp_packet_set_payload(
  * @brief Clear the RTP packet payload.
  *
  * @param [out] packet - packet to clear on.
- * @return 0 on success.
  */
-int rtp_packet_clear_payload(rtp_packet *packet);
+void rtp_packet_clear_payload(rtp_packet *packet);
 
 #if defined(__cplusplus)
 }

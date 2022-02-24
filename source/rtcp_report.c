@@ -7,14 +7,33 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
+#include "rtp/ntp.h"
 #include "rtp/rtcp_report.h"
 #include "util.h"
 
-int rtcp_report_serialize(
-    const rtcp_report *report, uint8_t *buffer, int size)
+void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv tc)
 {
-    if(!report || !buffer || size < 24)
+    assert(report != NULL);
+    assert(s != NULL);
+
+    report->ssrc = s->id;
+    report->fraction = s->fraction;
+    report->lost = s->lost;
+    report->last_seq = s->max_seq;
+    report->jitter = s->jitter;
+    report->lsr = ntp_short(s->lsr);
+    if(report->lsr && (tc.sec || tc.frac))
+        report->dlsr = ntp_short(ntp_diff(tc, s->lsr));
+}
+
+int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size)
+{
+    assert(report != NULL);
+    assert(buffer != NULL);
+
+    if(size < 24)
         return -1;
 
     write_u32(buffer, report->ssrc);
@@ -32,7 +51,10 @@ int rtcp_report_serialize(
 
 int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size)
 {
-    if(!report || !buffer || size < 24)
+    assert(report != NULL);
+    assert(buffer != NULL);
+
+    if(size < 24)
         return -1;
 
     report->ssrc = read_u32(buffer);
@@ -44,23 +66,5 @@ int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size)
     report->lsr = read_u32(buffer + 16);
     report->dlsr = read_u32(buffer + 20);
 
-    return 0;
-}
-
-int rtcp_report_set_fraction(rtcp_report *report, float percent_lost)
-{
-    if(!report)
-        return -1;
-
-    report->fraction = percent_lost * 255.0;
-    return 0;
-}
-
-int rtcp_report_get_fraction(rtcp_report *report, float *percent_lost)
-{
-    if(!report || !percent_lost)
-        return -1;
-
-    *percent_lost = (float)(report->fraction) / 255.0;
     return 0;
 }
