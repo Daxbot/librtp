@@ -44,8 +44,14 @@ int rtcp_rr_size(const rtcp_rr *packet)
 {
     assert(packet != NULL);
 
-    const int report_size = packet->header.common.count * sizeof(rtcp_report);
-    return 8 + report_size + packet->ext_size;
+    int size = 8 + (packet->header.common.count * sizeof(rtcp_report));
+    if(packet->ext_data && packet->ext_size) {
+        size += packet->ext_size;
+        if(size % 4)
+            size += 4 - (size % 4);
+    }
+
+    return size;
 }
 
 int rtcp_rr_serialize(const rtcp_rr *packet, uint8_t *buffer, int size)
@@ -188,9 +194,6 @@ int rtcp_rr_set_ext(rtcp_rr *packet, const void *data, int size)
 {
     assert(packet != NULL);
     assert(data != NULL);
-
-    if((size % 4) != 0)
-        return -1;
 
     if(packet->ext_data)
         return -1;

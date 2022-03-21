@@ -48,7 +48,8 @@ int rtcp_app_size(const rtcp_app *packet)
     int size = 12;
     if(packet->app_data && packet->app_size) {
         size += packet->app_size;
-        size += 4 - (size % 4);
+        if(size % 4)
+            size += 4 - (size % 4);
     }
 
     return size;

@@ -49,8 +49,9 @@ int rtcp_bye_size(const rtcp_bye *packet)
 
     int size = 4 + (packet->header.common.count * 4);
     if(packet->message) {
-        size += strlen(packet->message);
-        size += 4 - (size % 4);
+        size += 1 + strlen(packet->message);
+        if(size % 4)
+            size += 4 - (size % 4);
     }
 
     return size;
@@ -123,7 +124,7 @@ int rtcp_bye_parse(
 
         packet->message = (char *)malloc(length + 1);
         memcpy(packet->message, buffer + offset, length);
-        packet->message[length] = '\0';
+        packet->message[length + 1] = '\0';
     }
 
     return 0;

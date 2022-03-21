@@ -43,7 +43,10 @@ static int entry_size(const rtcp_sdes_entry *source)
         size += item_size(&source->items[i]);
 
     // Entry must end on a 32-bit boundary
-    return size + (4 - (size % 4));
+    if(size % 4)
+        size += 4 - (size % 4);
+
+    return size;
 }
 
 /**
