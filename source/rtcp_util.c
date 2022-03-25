@@ -33,9 +33,9 @@ double rtcp_interval(
     double avg_rtcp_size,
     bool initial)
 {
-    static const double MIN_TIME = LIBRTP_RTCP_MIN_TIME;
-    static const double SENDER_BW_FRACTION = LIBRTP_RTCP_SENDER_BW_FRACTION;
-    static const double RCVR_BW_FRACTION = (1 - SENDER_BW_FRACTION);
+    const double MIN_TIME = LIBRTP_RTCP_MIN_TIME;
+    const double SENDER_BW_FRACTION = LIBRTP_RTCP_SENDER_BW_FRACTION;
+    const double RCVR_BW_FRACTION = (1.0 - SENDER_BW_FRACTION);
 
     /*
      * To compensate for "timer reconsideration" converging to a
