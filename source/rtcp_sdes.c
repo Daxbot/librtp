@@ -297,6 +297,9 @@ int rtcp_sdes_parse(
                 rtcp_sdes_item *item = create_item(
                     source, type, data + 2, length);
 
+                if(!item)
+                    return -1;
+
                 offset += item_size(item);
             }
         }
