@@ -55,7 +55,9 @@ set_target_properties(rtp PROPERTIES PUBLIC_HEADER "${RTP_HEADERS}")
 
 target_include_directories(rtp PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-target_compile_options(rtp PRIVATE -Wall -Wextra)
+if(CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(rtp PRIVATE -Wall -Wextra)
+endif()
 
 install(
     TARGETS rtp
