@@ -89,7 +89,7 @@ double rtcp_interval(
      * other sites, we then pick our actual next report interval as a
      * random number uniformly distributed between 0.5*t and 1.5*t.
      */
-    t *= drand48() + 0.5;
+    t *= ((double)(rand()) / RAND_MAX) + 0.5;
     t /= COMPENSATION;
 
     return t;
