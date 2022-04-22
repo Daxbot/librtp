@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 /**
  * @brief The minimum average time between RTCP packets in seconds.
@@ -52,7 +53,7 @@ extern "C" {
  * @param [in] size - buffer size.
  * @return packet type or -1 on failure.
  */
-int rtcp_type(const uint8_t *buffer, int size);
+int rtcp_type(const uint8_t *buffer, size_t size);
 
 /**
  * @brief Calculates the RTCP transmission interval in seconds.

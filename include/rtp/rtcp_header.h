@@ -10,6 +10,7 @@
 #define LIBRTP_RTCP_HEADER_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -57,7 +58,8 @@ typedef enum {
  * @param [in] size - buffer size.
  * @return number of bytes written or -1 on failure.
  */
-int rtcp_header_serialize(const rtcp_header *header, uint8_t *buffer, int size);
+int rtcp_header_serialize(
+    const rtcp_header *header, uint8_t *buffer, size_t size);
 
 /**
  * @brief Parse an RTCP header from a buffer.
@@ -67,7 +69,8 @@ int rtcp_header_serialize(const rtcp_header *header, uint8_t *buffer, int size);
  * @param [in] size - buffer size.
  * @return 0 on success.
  */
-int rtcp_header_parse(rtcp_header *header, const uint8_t *buffer, int size);
+int rtcp_header_parse(
+    rtcp_header *header, const uint8_t *buffer, size_t size);
 
 #if defined(__cplusplus)
 }

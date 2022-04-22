@@ -41,33 +41,33 @@ void rtp_header_init(
     assert(header != NULL);
 
     header->version = 2;
-    header->pt = pt;
+    header->pt = (unsigned)(pt & 0x1);
     header->ssrc = ssrc;
     header->seq = seq;
     header->ts = ts;
 }
 
-int rtp_header_size(const rtp_header *header)
+size_t rtp_header_size(const rtp_header *header)
 {
     assert(header != NULL);
 
-    int size = 12;
+    size_t size = 12;
 
     if(header->csrc && header->cc)
-        size += 4 * header->cc;
+        size += 4U * header->cc;
 
     if(header->x && header->ext_count && header->ext_data)
-        size += 4 * (1 + header->ext_count);
+        size += 4U * (1 + header->ext_count);
 
     return size;
 }
 
-int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size)
+int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, size_t size)
 {
     assert(header != NULL);
     assert(buffer != NULL);
 
-    const int header_size = rtp_header_size(header);
+    const size_t header_size = rtp_header_size(header);
     if(size < header_size)
         return -1;
 
@@ -75,14 +75,14 @@ int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size)
     memset(buffer, 0, header_size);
 
     buffer[0] = (2 << 6);
-    buffer[1] = ((header->m & 1) << 7) | (header->pt & 0x7f);
+    buffer[1] = (uint8_t)(((header->m & 1) << 7) | (header->pt & 0x7f));
 
     write_u16(buffer + 2, header->seq);
     write_u32(buffer + 4, header->ts);
     write_u32(buffer + 8, header->ssrc);
 
     if(header->cc && header->csrc) {
-        buffer[0] |= (header->cc & 7);
+        buffer[0] = (uint8_t)(buffer[0] | (header->cc & 0x7));
 
         uint8_t *csrc_start = buffer + 12;
         for(uint8_t i = 0; i < header->cc; i++)
@@ -102,11 +102,11 @@ int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size)
             write_u32(ext_data + (i * 4), header->ext_data[i]);
     }
 
-    return header_size;
+    return (int)header_size;
 }
 
 
-int rtp_header_parse(rtp_header *header, const uint8_t *buffer, int size)
+int rtp_header_parse(rtp_header *header, const uint8_t *buffer, size_t size)
 {
     assert(header != NULL);
     assert(buffer != NULL);
@@ -116,18 +116,18 @@ int rtp_header_parse(rtp_header *header, const uint8_t *buffer, int size)
         return -1;
 
     // Version must be 2
-    header->version = (buffer[0] >> 6) & 3;
+    header->version = (unsigned)((buffer[0] >> 6) & 0x3);
     if(header->version != 2)
         return -1;
 
     // Payload type must not be in the range [72-95]
-    header->pt = buffer[1] & 0x7f;
+    header->pt = (unsigned)(buffer[1] & 0x7f);
     if(header->pt < 96 && header->pt > 71)
         return -1;
 
-    header->x = (buffer[0] >> 4) & 1;
-    header->cc = buffer[0] & 7;
-    header->m = (buffer[1] >> 7) & 1;
+    header->x = (unsigned)((buffer[0] >> 4) & 0x1);
+    header->cc = (unsigned)(buffer[0] & 0x7);
+    header->m = (unsigned)((buffer[1] >> 7) & 0x1);
     header->seq = read_u16(buffer + 2);
     header->ts = read_u32(buffer + 4);
     header->ssrc = read_u32(buffer + 8);
@@ -206,7 +206,7 @@ void rtp_header_remove_csrc(rtp_header *header, uint32_t csrc)
     if(index < 0)
         return;
 
-    const size_t size = (header->cc - index) * sizeof(uint32_t);
+    const size_t size = (unsigned)(header->cc - index) * sizeof(uint32_t);
     if(size)
         memmove(&header->csrc[index], &header->csrc[index + 1], size);
 
@@ -222,7 +222,7 @@ void rtp_header_remove_csrc(rtp_header *header, uint32_t csrc)
 }
 
 int rtp_header_set_ext(
-    rtp_header *header, uint16_t id, const uint32_t *data, int size)
+    rtp_header *header, uint16_t id, const uint32_t *data, uint16_t count)
 {
     assert(header != NULL);
     assert(data != NULL);
@@ -230,13 +230,14 @@ int rtp_header_set_ext(
     if(header->ext_data)
         return -1;
 
-    header->ext_data = (uint32_t*)malloc(4 * size);
+    const size_t size = 4 * count;
+    header->ext_data = (uint32_t*)malloc(size);
     if(!header->ext_data)
         return -1;
 
     header->ext_id = id;
-    header->ext_count = size;
-    memcpy(header->ext_data, data, size * 4);
+    header->ext_count = count;
+    memcpy(header->ext_data, data, size);
 
     return 0;
 }

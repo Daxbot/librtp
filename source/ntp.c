@@ -36,10 +36,10 @@ double ntp_to_unix(ntp_tv ntp)
 ntp_tv ntp_from_double(double s)
 {
     ntp_tv ntp;
-    ntp.sec = s;
+    ntp.sec = (uint32_t)s;
 
     double frac = (s - ntp.sec);
-    ntp.frac = frac * LIBRTP_NTP_FRAC;
+    ntp.frac = (uint32_t)(frac * LIBRTP_NTP_FRAC);
 
     return ntp;
 }

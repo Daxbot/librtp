@@ -49,19 +49,19 @@ void rtp_packet_init(
     rtp_header_init(packet->header, pt, ssrc, seq, ts);
 }
 
-int rtp_packet_size(const rtp_packet *packet)
+size_t rtp_packet_size(const rtp_packet *packet)
 {
     assert(packet != NULL);
 
     return rtp_header_size(packet->header) + packet->payload_size;
 }
 
-int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, int size)
+int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, size_t size)
 {
     assert(packet != NULL);
     assert(buffer != NULL);
 
-    const int packet_size = rtp_packet_size(packet);
+    const size_t packet_size = rtp_packet_size(packet);
     if(size < packet_size)
         return -1;
 
@@ -73,10 +73,10 @@ int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, int size)
     // Add payload
     memcpy(buffer + offset, packet->payload_data, packet->payload_size);
 
-    return packet_size;
+    return (int)packet_size;
 }
 
-int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, int size)
+int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, size_t size)
 {
     assert(packet != NULL);
     assert(buffer != NULL);
@@ -84,13 +84,13 @@ int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, int size)
     if(rtp_header_parse(packet->header, buffer, size) < 0)
         return -1;
 
-    const int header_size = rtp_header_size(packet->header);
+    const size_t header_size = rtp_header_size(packet->header);
     rtp_packet_set_payload(packet, buffer + header_size, size - header_size);
 
     return 0;
 }
 
-int rtp_packet_set_payload(rtp_packet *packet, const void *data, int size)
+int rtp_packet_set_payload(rtp_packet *packet, const void *data, size_t size)
 {
     assert(packet != NULL);
     assert(data != NULL);

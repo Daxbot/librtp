@@ -118,7 +118,7 @@ void rtp_source_update_lost(rtp_source *s)
     assert(s != NULL);
 
     uint32_t ext_max = s->cycles + s->max_seq;
-    int expected = ext_max - s->base_seq + 1;
+    int expected = (int)(ext_max - s->base_seq + 1);
 
     int expected_interval = expected - s->expected_prior;
     int received_interval = s->received - s->received_prior;
@@ -131,14 +131,14 @@ void rtp_source_update_lost(rtp_source *s)
     if(expected_interval == 0 || lost_interval <= 0)
         s->fraction = 0;
     else
-        s->fraction = (lost_interval << 8) / expected_interval;
+        s->fraction = (uint8_t)((lost_interval << 8) / expected_interval);
 }
 
 void rtp_source_update_jitter(rtp_source *s, uint32_t ts, uint32_t arrival)
 {
     assert(s != NULL);
 
-    int transit = arrival - ts;
+    int transit = (int)(arrival - ts);
     int d = abs(transit - s->transit);
 
     s->transit = transit;

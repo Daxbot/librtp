@@ -31,6 +31,7 @@
 #define LIBRTP_RTP_HEADER_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -91,7 +92,7 @@ void rtp_header_init(
  * @param [in] header - header to check.
  * @return header size in bytes.
  */
-int rtp_header_size(const rtp_header *header);
+size_t rtp_header_size(const rtp_header *header);
 
 /**
  * @brief Write an RTP header to a buffer.
@@ -101,7 +102,8 @@ int rtp_header_size(const rtp_header *header);
  * @param [in] size - buffer size.
  * @return number of bytes written or -1 on failure.
  */
-int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size);
+int rtp_header_serialize(
+    const rtp_header *header, uint8_t *buffer, size_t size);
 
 /**
  * @brief Fill a RTP header from a buffer.
@@ -111,7 +113,7 @@ int rtp_header_serialize(const rtp_header *header, uint8_t *buffer, int size);
  * @param [in] size - buffer size.
  * @return 0 on success.
  */
-int rtp_header_parse(rtp_header *header, const uint8_t *buffer, int size);
+int rtp_header_parse(rtp_header *header, const uint8_t *buffer, size_t size);
 
 /**
  * @brief Return the index of a csrc.
@@ -145,11 +147,11 @@ void rtp_header_remove_csrc(rtp_header *header, uint32_t csrc);
  * @param [out] header - header to set on.
  * @param [in] id - extension id.
  * @param [in] data - extension data.
- * @param [in] size - extension data size.
+ * @param [in] count - the number of entries in data.
  * @return 0 on success.
  */
 int rtp_header_set_ext(
-    rtp_header *header, uint16_t id, const uint32_t *data, int size);
+    rtp_header *header, uint16_t id, const uint32_t *data, uint16_t count);
 
 /**
  * @brief Clear the header extension.

@@ -8,11 +8,15 @@ message(STATUS "RTP library version: ${LIBRTP_VERSION}")
 set(PROJECT_DESCRIPTION "Real-time Transport Protocol")
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+
+if(WIN32)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+endif()
 
 include(GNUInstallDirs)
 
 # Options
+option(LIBRTP_BUILD_TESTING "Build testing" OFF)
 option(LIBRTP_BUILD_DOCS "Build documentation" OFF)
 option(LIBRTP_BUILD_EXAMPLES "Build examples" OFF)
 
@@ -39,8 +43,8 @@ install(
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/rtp)
 
-# Build tests (-DBUILD_TESTING=ON)
-if(BUILD_TESTING)
+# Build tests (-DLIBRTP_BUILD_TESTING=ON)
+if(LIBRTP_BUILD_TESTING AND BUILD_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif()

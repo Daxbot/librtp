@@ -22,13 +22,14 @@ void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv tc)
     report->fraction = s->fraction;
     report->lost = s->lost;
     report->last_seq = s->max_seq;
-    report->jitter = s->jitter;
+    report->jitter = (uint32_t)s->jitter;
     report->lsr = ntp_short(s->lsr);
     if(report->lsr && (tc.sec || tc.frac))
         report->dlsr = ntp_short(ntp_diff(tc, s->lsr));
 }
 
-int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size)
+int rtcp_report_serialize(
+    const rtcp_report *report, uint8_t *buffer, size_t size)
 {
     assert(report != NULL);
     assert(buffer != NULL);
@@ -49,7 +50,7 @@ int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size)
     return 24;
 }
 
-int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size)
+int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, size_t size)
 {
     assert(report != NULL);
     assert(buffer != NULL);
