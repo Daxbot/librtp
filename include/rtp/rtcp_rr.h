@@ -68,7 +68,7 @@ typedef struct rtcp_rr {
  *
  * @return rtcp_rr*
  */
-rtcp_rr *rtcp_rr_create();
+rtcp_rr *rtcp_rr_create(void);
 
 /**
  * @brief Free an RR packet.

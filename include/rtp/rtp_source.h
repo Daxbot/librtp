@@ -65,7 +65,7 @@ typedef struct rtp_source {
  *
  * @return rtp_source*
  */
-rtp_source *rtp_source_create();
+rtp_source *rtp_source_create(void);
 
 /**
  * @brief Free a source.

@@ -53,7 +53,7 @@ typedef struct rtcp_app {
  *
  * @return rtcp_app_packet*
  */
-rtcp_app *rtcp_app_create();
+rtcp_app *rtcp_app_create(void);
 
 /**
  * @brief Free an APP packet.

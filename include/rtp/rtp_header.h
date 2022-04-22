@@ -65,7 +65,7 @@ typedef struct rtp_header {
  *
  * @return header.
  */
-rtp_header *rtp_header_create();
+rtp_header *rtp_header_create(void);
 
 /**
  * @brief Free an RTP header.

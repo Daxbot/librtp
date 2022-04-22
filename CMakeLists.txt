@@ -34,7 +34,8 @@ set_target_properties(rtp PROPERTIES
 target_include_directories(rtp PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(rtp PRIVATE -Wall -Wextra)
+    target_compile_options(rtp PRIVATE
+        -Wall -Wextra -Wpedantic -Wmissing-prototypes)
 endif()
 
 install(

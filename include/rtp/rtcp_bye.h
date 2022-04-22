@@ -50,7 +50,7 @@ typedef struct rtcp_bye {
  *
  * @return rtcp_bye_packet*
  */
-rtcp_bye *rtcp_bye_create();
+rtcp_bye *rtcp_bye_create(void);
 
 /**
  * @brief Free a BYE packet.

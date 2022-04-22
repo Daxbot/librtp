@@ -96,7 +96,7 @@ typedef struct rtcp_sdes {
  *
  * @return rtcp_sdes_packet*
  */
-rtcp_sdes *rtcp_sdes_create();
+rtcp_sdes *rtcp_sdes_create(void);
 
 /**
  * @brief Free an SDES packet.

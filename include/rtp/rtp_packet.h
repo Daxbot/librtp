@@ -29,7 +29,7 @@ typedef struct rtp_packet {
  *
  * @return packet.
  */
-rtp_packet *rtp_packet_create();
+rtp_packet *rtp_packet_create(void);
 
 /**
  * @brief Free a RTP packet.

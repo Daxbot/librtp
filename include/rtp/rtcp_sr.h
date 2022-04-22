@@ -82,7 +82,7 @@ typedef struct rtcp_sr {
  *
  * @return rtcp_sr*
  */
-rtcp_sr *rtcp_sr_create();
+rtcp_sr *rtcp_sr_create(void);
 
 /**
  * @brief Free an SR packet.
