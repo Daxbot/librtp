@@ -36,16 +36,16 @@ void rtcp_app_init(rtcp_app *packet, uint8_t subtype)
     assert(packet != NULL);
 
     packet->header.app.version = 2;
-    packet->header.app.subtype = subtype;
+    packet->header.app.subtype = (unsigned)(subtype & 0x1f);
     packet->header.app.pt = RTCP_APP;
     packet->header.app.length = 2;
 }
 
-int rtcp_app_size(const rtcp_app *packet)
+size_t rtcp_app_size(const rtcp_app *packet)
 {
     assert(packet != NULL);
 
-    int size = 12;
+    size_t size = 12;
     if(packet->app_data && packet->app_size) {
         size += packet->app_size;
         if(size % 4)
@@ -56,12 +56,12 @@ int rtcp_app_size(const rtcp_app *packet)
 }
 
 int rtcp_app_serialize(
-    const rtcp_app *packet, uint8_t *buffer, int size)
+    const rtcp_app *packet, uint8_t *buffer, size_t size)
 {
     assert(packet != NULL);
     assert(buffer != NULL);
 
-    const int packet_size = rtcp_app_size(packet);
+    const size_t packet_size = rtcp_app_size(packet);
     if(size < packet_size)
         return -1;
 
@@ -75,10 +75,10 @@ int rtcp_app_serialize(
     if(packet->app_data)
         memcpy(buffer + 12, packet->app_data, packet->app_size);
 
-    return packet_size;
+    return (int)packet_size;
 }
 
-int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, int size)
+int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, size_t size)
 {
     assert(packet != NULL);
     assert(buffer != NULL);
@@ -90,10 +90,9 @@ int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, int size)
     packet->ssrc = read_u32(buffer + 4);
     packet->name = read_u32(buffer + 8);
 
-    const int length = (packet->header.common.length + 1) * 4;
-    packet->app_size = length - 12;
-
-    if(packet->app_size) {
+    const size_t length = (packet->header.common.length + 1) * 4U;
+    if(length > 12) {
+        packet->app_size = length - 12;
         packet->app_data = malloc(packet->app_size);
         memcpy(packet->app_data, buffer + 12, packet->app_size);
     }
@@ -101,7 +100,7 @@ int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, int size)
     return 0;
 }
 
-int rtcp_app_set_data(rtcp_app *packet, const void *data, int size)
+int rtcp_app_set_data(rtcp_app *packet, const void *data, size_t size)
 {
     assert(packet != NULL);
     assert(data != NULL);
@@ -117,7 +116,7 @@ int rtcp_app_set_data(rtcp_app *packet, const void *data, int size)
     memcpy(packet->app_data, data, size);
 
     // Update header length
-    packet->header.common.length = (rtcp_app_size(packet) / 4) - 1;
+    packet->header.common.length = (uint16_t)((rtcp_app_size(packet) / 4) - 1);
 
     return 0;
 }
@@ -133,5 +132,5 @@ void rtcp_app_clear_data(rtcp_app *packet)
     }
 
     // Update header length
-    packet->header.common.length = (rtcp_app_size(packet) / 4) - 1;
+    packet->header.common.length = (uint16_t)((rtcp_app_size(packet) / 4) - 1);
 }

@@ -50,7 +50,7 @@ typedef struct rtcp_bye {
  *
  * @return rtcp_bye_packet*
  */
-rtcp_bye *rtcp_bye_create();
+rtcp_bye *rtcp_bye_create(void);
 
 /**
  * @brief Free a BYE packet.
@@ -72,7 +72,7 @@ void rtcp_bye_init(rtcp_bye *packet);
  * @param [in] packet - packet to check.
  * @return packet size in bytes.
  */
-int rtcp_bye_size(const rtcp_bye *packet);
+size_t rtcp_bye_size(const rtcp_bye *packet);
 
 /**
  * @brief Write a BYE packet to a buffer.
@@ -82,7 +82,7 @@ int rtcp_bye_size(const rtcp_bye *packet);
  * @param [in] size - buffer size.
  * @return number of bytes written or -1 on failure.
  */
-int rtcp_bye_serialize(const rtcp_bye *packet, uint8_t *buffer, int size);
+int rtcp_bye_serialize(const rtcp_bye *packet, uint8_t *buffer, size_t size);
 
 /**
  * @brief Parse a BYE packet from a buffer.
@@ -92,7 +92,7 @@ int rtcp_bye_serialize(const rtcp_bye *packet, uint8_t *buffer, int size);
  * @param [in] size - buffer size.
  * @return 0 on success.
  */
-int rtcp_bye_parse(rtcp_bye *packet, const uint8_t *buffer, int size);
+int rtcp_bye_parse(rtcp_bye *packet, const uint8_t *buffer, size_t size);
 
 /**
  * @brief Return the index of a source.

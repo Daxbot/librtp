@@ -59,7 +59,7 @@ typedef struct rtcp_rr {
     rtcp_header header;     /**< RTCP header. */
     uint32_t ssrc;          /**< Source identifier. */
     rtcp_report *reports;   /**< Reports. */
-    int ext_size;           /**< Size of the extension data in bytes. */
+    size_t ext_size;        /**< Size of the extension data in bytes. */
     void *ext_data;         /**< Extension data. */
 } rtcp_rr;
 
@@ -68,7 +68,7 @@ typedef struct rtcp_rr {
  *
  * @return rtcp_rr*
  */
-rtcp_rr *rtcp_rr_create();
+rtcp_rr *rtcp_rr_create(void);
 
 /**
  * @brief Free an RR packet.
@@ -90,7 +90,7 @@ void rtcp_rr_init(rtcp_rr *packet);
  * @param [in] packet - packet to check.
  * @return packet size in bytes.
  */
-int rtcp_rr_size(const rtcp_rr *packet);
+size_t rtcp_rr_size(const rtcp_rr *packet);
 
 /**
  * @brief Write an RR packet to a buffer.
@@ -100,7 +100,7 @@ int rtcp_rr_size(const rtcp_rr *packet);
  * @param [in] size - buffer size.
  * @return number of bytes written or -1 on failure.
  */
-int rtcp_rr_serialize(const rtcp_rr *packet, uint8_t *buffer, int size);
+int rtcp_rr_serialize(const rtcp_rr *packet, uint8_t *buffer, size_t size);
 
 /**
  * @brief Parse an RR packet from a buffer.
@@ -110,7 +110,7 @@ int rtcp_rr_serialize(const rtcp_rr *packet, uint8_t *buffer, int size);
  * @param [in] size - buffer size.
  * @return 0 on success.
  */
-int rtcp_rr_parse(rtcp_rr *packet, const uint8_t *buffer, int size);
+int rtcp_rr_parse(rtcp_rr *packet, const uint8_t *buffer, size_t size);
 
 /**
  * @brief Find a report.
@@ -146,7 +146,7 @@ void rtcp_rr_remove_report(rtcp_rr *packet, uint32_t ssrc);
  * @param [in] size - data size.
  * @return 0 on success.
  */
-int rtcp_rr_set_ext(rtcp_rr *packet, const void *data, int size);
+int rtcp_rr_set_ext(rtcp_rr *packet, const void *data, size_t size);
 
 /**
  * @brief Clear the extension data.

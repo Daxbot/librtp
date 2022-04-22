@@ -20,7 +20,7 @@ extern "C" {
  */
 typedef struct rtp_packet {
     rtp_header *header;         /**< RTP header. */
-    int payload_size;           /**< Size of the payload data in bytes. */
+    size_t payload_size;        /**< Size of the payload data in bytes. */
     void *payload_data;         /**< Payload data. */
 } rtp_packet;
 
@@ -29,7 +29,7 @@ typedef struct rtp_packet {
  *
  * @return packet.
  */
-rtp_packet *rtp_packet_create();
+rtp_packet *rtp_packet_create(void);
 
 /**
  * @brief Free a RTP packet.
@@ -56,7 +56,7 @@ void rtp_packet_init(
  * @param [in] packet - packet to check.
  * @return packet size in bytes.
  */
-int rtp_packet_size(const rtp_packet *packet);
+size_t rtp_packet_size(const rtp_packet *packet);
 
 /**
  * @brief Write an RTP packet to a buffer.
@@ -66,7 +66,8 @@ int rtp_packet_size(const rtp_packet *packet);
  * @param [in] size - buffer size.
  * @return number of bytes written or -1 on failure.
  */
-int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, int size);
+int rtp_packet_serialize(
+    const rtp_packet *packet, uint8_t *buffer, size_t size);
 
 /**
  * @brief Fill an RTP packet from a buffer.
@@ -79,7 +80,7 @@ int rtp_packet_serialize(const rtp_packet *packet, uint8_t *buffer, int size);
  * @param [in] size - buffer size.
  * @return 0 on success.
  */
-int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, int size);
+int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, size_t size);
 
 /**
  * @brief Set the RTP packet payload.
@@ -93,7 +94,7 @@ int rtp_packet_parse(rtp_packet *packet, const uint8_t *buffer, int size);
  * @return 0 on success.
  */
 int rtp_packet_set_payload(
-    rtp_packet *packet, const void *data, int size);
+    rtp_packet *packet, const void *data, size_t size);
 
 /**
  * @brief Clear the RTP packet payload.

@@ -10,6 +10,7 @@
 #define LIBRTP_RTCP_REPORT_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
 #include "ntp.h"
 #include "rtp_source.h"
@@ -24,7 +25,7 @@ extern "C" {
 typedef struct rtcp_report {
     uint32_t ssrc;              /**< Source identifier. */
     unsigned int fraction : 8;  /**< Fraction lost since last SR/RR. */
-    signed int lost : 24;       /**< Cumulative number of packets lost. */
+    int lost : 24;              /**< Cumulative number of packets lost. */
     uint32_t last_seq;          /**< Highest sequence number received. */
     uint32_t jitter;            /**< Interarrival jitter. */
     uint32_t lsr;               /**< Last SR. */
@@ -48,7 +49,8 @@ void rtcp_report_init(rtcp_report *report, rtp_source *s, ntp_tv tc);
  * @param [in] size - buffer size.
  * @return number of bytes written or -1 on failure.
  */
-int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size);
+int rtcp_report_serialize(
+    const rtcp_report *report, uint8_t *buffer, size_t size);
 
 /**
  * @brief Parse a report from a buffer.
@@ -58,7 +60,8 @@ int rtcp_report_serialize(const rtcp_report *report, uint8_t *buffer, int size);
  * @param [in] size - buffer size.
  * @return 0 on success.
  */
-int rtcp_report_parse(rtcp_report *report, const uint8_t *buffer, int size);
+int rtcp_report_parse(
+    rtcp_report *report, const uint8_t *buffer, size_t size);
 
 #if defined(__cplusplus)
 }

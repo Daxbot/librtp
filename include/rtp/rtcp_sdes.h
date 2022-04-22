@@ -96,7 +96,7 @@ typedef struct rtcp_sdes {
  *
  * @return rtcp_sdes_packet*
  */
-rtcp_sdes *rtcp_sdes_create();
+rtcp_sdes *rtcp_sdes_create(void);
 
 /**
  * @brief Free an SDES packet.
@@ -118,7 +118,7 @@ void rtcp_sdes_init(rtcp_sdes *packet);
  * @param [in] packet - packet.
  * @return packet size in bytes.
  */
-int rtcp_sdes_size(const rtcp_sdes *packet);
+size_t rtcp_sdes_size(const rtcp_sdes *packet);
 
 /**
  * @brief Write an SDES packet to a buffer.
@@ -128,7 +128,7 @@ int rtcp_sdes_size(const rtcp_sdes *packet);
  * @param [in] size - buffer size.
  * @return number of bytes written or -1 on failure.
  */
-int rtcp_sdes_serialize(const rtcp_sdes *packet, uint8_t *buffer, int size);
+int rtcp_sdes_serialize(const rtcp_sdes *packet, uint8_t *buffer, size_t size);
 
 /**
  * @brief Parse an SDES packet from a buffer.
@@ -138,7 +138,7 @@ int rtcp_sdes_serialize(const rtcp_sdes *packet, uint8_t *buffer, int size);
  * @param [in] size - buffer size.
  * @return 0 on success.
  */
-int rtcp_sdes_parse(rtcp_sdes *packet, const uint8_t *buffer, int size);
+int rtcp_sdes_parse(rtcp_sdes *packet, const uint8_t *buffer, size_t size);
 
 /**
  * @brief Find a source entry.
@@ -181,7 +181,7 @@ int rtcp_sdes_get_item(
     uint32_t src,
     rtcp_sdes_type type,
     char *buffer,
-    int size);
+    size_t size);
 
 /**
  * @brief Set an SDES item.

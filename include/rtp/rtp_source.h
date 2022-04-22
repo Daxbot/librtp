@@ -48,15 +48,15 @@ typedef struct rtp_source {
     uint32_t base_seq;          /**< Base seq number. */
     uint32_t bad_seq;           /**< Last 'bad' seq number + 1 */
 #if LIBRTP_MIN_SEQUENTIAL > 0
-    uint32_t probation;         /**< Sequ. packets till source is valid. */
+    int probation;              /**< Sequ. packets till source is valid. */
 #endif
-    uint32_t received;          /**< Packets received. */
-    uint32_t expected_prior;    /**< Packets expected at last interval. */
-    uint32_t received_prior;    /**< Packets received at last interval. */
+    int received;               /**< Packets received. */
+    int expected_prior;         /**< Packets expected at last interval. */
+    int received_prior;         /**< Packets received at last interval. */
     int transit;                /**< Relative transit time for prev. pkt. */
     double jitter;              /**< Estimated jitter. */
     unsigned int fraction : 8;  /**< Fraction lost since last sent SR/RR. */
-    signed int lost : 24;       /**< Cumulative number of packets lost. */
+    int lost : 24;              /**< Cumulative number of packets lost. */
     ntp_tv lsr;                 /**< Timestamp of the most recent SR from this source. */
 } rtp_source;
 
@@ -65,7 +65,7 @@ typedef struct rtp_source {
  *
  * @return rtp_source*
  */
-rtp_source *rtp_source_create();
+rtp_source *rtp_source_create(void);
 
 /**
  * @brief Free a source.

@@ -44,7 +44,7 @@ typedef struct rtcp_app {
     rtcp_header header;     /**< RTCP header. */
     uint32_t ssrc;          /**< Source identifier. */
     uint32_t name;          /**< Packet name (ASCII). */
-    int app_size;           /**< Size of the application data in bytes. */
+    size_t app_size;        /**< Size of the application data in bytes. */
     void *app_data;         /**< Application data. */
 } rtcp_app;
 
@@ -53,7 +53,7 @@ typedef struct rtcp_app {
  *
  * @return rtcp_app_packet*
  */
-rtcp_app *rtcp_app_create();
+rtcp_app *rtcp_app_create(void);
 
 /**
  * @brief Free an APP packet.
@@ -76,7 +76,7 @@ void rtcp_app_init(rtcp_app *packet, uint8_t subtype);
  * @param [in] packet - packet to check.
  * @return packet size in bytes.
  */
-int rtcp_app_size(const rtcp_app *packet);
+size_t rtcp_app_size(const rtcp_app *packet);
 
 /**
  * @brief Write an APP packet to a buffer.
@@ -87,7 +87,7 @@ int rtcp_app_size(const rtcp_app *packet);
  * @return number of bytes written or -1 on failure.
  */
 int rtcp_app_serialize(
-    const rtcp_app *packet, uint8_t *buffer, int size);
+    const rtcp_app *packet, uint8_t *buffer, size_t size);
 
 /**
  * @brief Parse an APP packet from a buffer.
@@ -97,7 +97,7 @@ int rtcp_app_serialize(
  * @param [in] size - buffer size.
  * @return 0 on success.
  */
-int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, int size);
+int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, size_t size);
 
 /**
  * @brief Set the application-dependent data.
@@ -107,7 +107,7 @@ int rtcp_app_parse(rtcp_app *packet, const uint8_t *buffer, int size);
  * @param [in] size - data size.
  * @return 0 on success.
  */
-int rtcp_app_set_data(rtcp_app *packet, const void *data, int size);
+int rtcp_app_set_data(rtcp_app *packet, const void *data, size_t size);
 
 /**
  * @brief Clear the application-dependent data.
