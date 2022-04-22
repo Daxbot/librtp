@@ -9,7 +9,6 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rtp/rtcp_header.h"
 #include "rtp/rtp_header.h"
 #include "util.h"
 
@@ -41,7 +40,7 @@ void rtp_header_init(
     assert(header != NULL);
 
     header->version = 2;
-    header->pt = (unsigned)(pt & 0x1);
+    header->pt = (unsigned)(pt & 0x7f);
     header->ssrc = ssrc;
     header->seq = seq;
     header->ts = ts;
