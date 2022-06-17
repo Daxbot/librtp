@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 # Configure project
 include(cmake/ParseVersion.cmake)
-project(LIBRTP VERSION ${LIBRTP_VERSION} LANGUAGES C CXX)
+project(librtp VERSION ${LIBRTP_VERSION} LANGUAGES C CXX)
 message(STATUS "RTP library version: ${LIBRTP_VERSION}")
 
 set(PROJECT_DESCRIPTION "Real-time Transport Protocol")
@@ -31,7 +31,9 @@ set_target_properties(rtp PROPERTIES
     VERSION ${LIBRTP_VERSION}
     PUBLIC_HEADER "${RTP_HEADERS}")
 
-target_include_directories(rtp PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(rtp PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
+    $<INSTALL_INTERFACE:include/>)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(rtp PRIVATE
@@ -39,7 +41,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 install(
-    TARGETS rtp
+    TARGETS rtp EXPORT RtpTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -79,3 +81,31 @@ if(LIBRTP_BUILD_DOCS)
         message(STATUS "Doxygen not found - skipping docs")
     endif()
 endif()
+
+# Install CMake configuration export file.
+include(CMakePackageConfigHelpers)
+
+set(LIBRTP_CMAKE_DESTINATION share/librtp)
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+
+configure_package_config_file(
+    cmake/RtpConfig.cmake.in RtpConfig.cmake
+    INSTALL_DESTINATION ${LIBRTP_CMAKE_DESTINATION}
+    PATH_VARS INCLUDE_INSTALL_DIR
+    INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/RtpConfigVersion.cmake
+    VERSION ${LIBRTP_VERSION}
+    COMPATIBILITY SameMajorVersion)
+
+install(
+    FILES
+        ${CMAKE_BINARY_DIR}/RtpConfig.cmake
+        ${CMAKE_BINARY_DIR}/RtpConfigVersion.cmake
+    DESTINATION
+        ${LIBRTP_CMAKE_DESTINATION})
+
+install(EXPORT RtpTargets
+        NAMESPACE rtp::
+        DESTINATION ${LIBRTP_CMAKE_DESTINATION})
