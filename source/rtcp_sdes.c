@@ -37,7 +37,7 @@ static size_t entry_size(const rtcp_sdes_entry *source)
 {
     assert(source != NULL);
 
-    size_t size = 4;
+    size_t size = 5; // SSRC + terminator
 
     for(uint8_t i = 0; i < source->item_count; ++i)
         size += item_size(&source->items[i]);
