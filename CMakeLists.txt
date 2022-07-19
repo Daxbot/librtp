@@ -16,7 +16,7 @@ endif()
 include(GNUInstallDirs)
 
 # Options
-option(LIBRTP_BUILD_TESTING "Build testing" OFF)
+option(LIBRTP_BUILD_TESTS "Build testing" OFF)
 option(LIBRTP_BUILD_DOCS "Build documentation" OFF)
 option(LIBRTP_BUILD_EXAMPLES "Build examples" OFF)
 
@@ -47,8 +47,8 @@ install(
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/rtp)
 
-# Build tests (-DLIBRTP_BUILD_TESTING=ON)
-if(LIBRTP_BUILD_TESTING AND BUILD_TESTING)
+# Build tests (-DLIBRTP_BUILD_TESTS=ON)
+if(LIBRTP_BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
 endif()

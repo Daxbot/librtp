@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <chrono>
 
-#include "rtp/ntp.h"
+#include "ntp.h"
 
 using namespace std::chrono;
 

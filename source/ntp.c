@@ -5,7 +5,7 @@
  * @copyright 2022 Daxbot
  */
 
-#include "rtp/ntp.h"
+#include "ntp.h"
 
 /**
  * @brief 1970 - 1900 in seconds.

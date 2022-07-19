@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "rtp/rtcp_report.h"
+#include "rtcp_report.h"
 
 TEST(Report, Size) {
     EXPECT_EQ(sizeof(rtcp_report), 24);

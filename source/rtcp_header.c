@@ -8,7 +8,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rtp/rtcp_header.h"
+#include "rtcp_header.h"
 #include "util.h"
 
 int rtcp_header_serialize(

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "rtp/rtp_packet.h"
+#include "rtp_packet.h"
 
 TEST(RtpPacket, Create) {
     rtp_packet *packet = rtp_packet_create();

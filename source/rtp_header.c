@@ -9,7 +9,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rtp/rtp_header.h"
+#include "rtp_header.h"
 #include "util.h"
 
 rtp_header *rtp_header_create()

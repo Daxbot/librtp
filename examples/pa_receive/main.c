@@ -21,7 +21,7 @@
 #include <pulse/simple.h>
 #include <pulse/error.h>
 
-#include "rtp/rtp_header.h"
+#include "rtp_header.h"
 
 #define DEFAULT_PORT (5002)
 #define DEFAULT_RATE (48000)    // 48kHz
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
         if(verbose) {
             printf("[ 0x%02x", data[0]);
 
-            for(int i = 1; i < rtp_header_size(header); ++i)
+            for(size_t i = 1; i < rtp_header_size(header); ++i)
                 printf(", 0x%02x", data[i]);
 
             printf(" ... ] (%d bytes)\n", n);

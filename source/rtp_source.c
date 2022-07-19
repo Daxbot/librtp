@@ -10,7 +10,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rtp/rtp_source.h"
+#include "rtp_source.h"
 
 /**
  * @brief RTP sequence number rollover value.

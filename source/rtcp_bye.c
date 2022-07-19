@@ -10,7 +10,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rtp/rtcp_bye.h"
+#include "rtcp_bye.h"
 #include "util.h"
 
 rtcp_bye *rtcp_bye_create()

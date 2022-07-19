@@ -10,7 +10,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rtp/rtp_packet.h"
+#include "rtp_packet.h"
 
 rtp_packet *rtp_packet_create()
 {

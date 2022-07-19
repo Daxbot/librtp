@@ -9,7 +9,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rtp/rtcp_sr.h"
+#include "rtcp_sr.h"
 #include "util.h"
 
 rtcp_sr *rtcp_sr_create()

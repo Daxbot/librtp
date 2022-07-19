@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <string>
 
-#include "rtp/rtcp_sdes.h"
+#include "rtcp_sdes.h"
 
 TEST(SdesPacket, Create) {
     rtcp_sdes *packet = rtcp_sdes_create();
