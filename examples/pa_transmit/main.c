@@ -21,7 +21,7 @@
 #include <pulse/simple.h>
 #include <pulse/error.h>
 
-#include "rtp/rtp_header.h"
+#include "rtp_header.h"
 
 #define DEFAULT_HOST "127.0.0.1"
 #define DEFAULT_PORT (5002)

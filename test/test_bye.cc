@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <string>
 
-#include "rtp/rtcp_bye.h"
+#include "rtcp_bye.h"
 
 TEST(ByePacket, Create) {
     rtcp_bye *packet = rtcp_bye_create();

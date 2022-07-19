@@ -1,5 +1,5 @@
 file(
-    STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/include/rtp/version.h"
+    STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/include/version.h"
     VERSION_PARTS REGEX "#define LIBRTP_VERSION_[A-Z]+[ ]+")
 
 string(

@@ -9,7 +9,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rtp/rtcp_sdes.h"
+#include "rtcp_sdes.h"
 #include "util.h"
 
 /**

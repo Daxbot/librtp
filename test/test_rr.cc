@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "rtp/rtcp_rr.h"
+#include "rtcp_rr.h"
 
 TEST(RrPacket, Create) {
     rtcp_rr *packet = rtcp_rr_create();
