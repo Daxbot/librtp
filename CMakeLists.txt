@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ParseVersion.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/BuildType.cmake)
+
 # Configure project
-include(cmake/ParseVersion.cmake)
 project(librtp VERSION ${LIBRTP_VERSION} LANGUAGES C CXX)
-message(STATUS "RTP library version: ${LIBRTP_VERSION}")
+message(STATUS "RTP library version: ${LIBRTP_VERSION} [${CMAKE_BUILD_TYPE}]")
 
 set(PROJECT_DESCRIPTION "Real-time Transport Protocol")
 set(CMAKE_C_STANDARD 99)
