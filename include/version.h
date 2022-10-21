@@ -15,6 +15,6 @@
 #define LIBRTP_VERSION_MINOR 1
 
 /** Build version, increment for small fixes. */
-#define LIBRTP_VERSION_PATCH 6
+#define LIBRTP_VERSION_PATCH 7
 
 #endif // LIBRTP_VERSION_H
