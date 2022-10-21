@@ -24,7 +24,7 @@ option(LIBRTP_BUILD_EXAMPLES "Build examples" OFF)
 add_subdirectory(include)
 add_subdirectory(source)
 
-add_library(rtp ${RTP_SOURCES})
+add_library(rtp SHARED ${RTP_SOURCES})
 
 set_target_properties(rtp PROPERTIES
     SOVERSION ${LIBRTP_VERSION_MAJOR}
