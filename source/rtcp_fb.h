@@ -1,9 +1,9 @@
 /**
- * @file rtcp_app.h
+ * @file rtcp_fb.h
  * @brief RTCP feedback packet.
  * @author Shijie Zhou
  * @copyright 2022 Daxbot
- * @ingroup app
+ * @ingroup fb
  */
 
  /**
